@@ -2,11 +2,15 @@ import shutil
 import os
 
 source_path = "/Users/saavedj/SimpleSolutions/music-licensed"
+source_text_path = "/Users/saavedj/SimpleSolutions/all_refererences.txt"
 backup_path = "/Users/saavedj/Backups/Lofi Audio Files"
 
 # Create the backup directory if it doesn't exist
 if not os.path.exists(backup_path):
     os.makedirs(backup_path)
+
+# Backup the text file
+shutil.copy2(source_text_path, backup_path)
 
 for root, dirs, files in os.walk(source_path):
     for file in files:
