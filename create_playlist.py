@@ -5,9 +5,9 @@ from tkinter import Tk, filedialog
 
 # Constants for file paths
 AUDIO_DIRECTORY = "/Users/saavedj/SimpleSolutions/music-licensed"
-TEXT_FILE_PATH = "/Users/saavedj/SimpleSolutions/all_refererences.txt"
-OUTPUT_REFERENCES_PATH = "/Users/saavedj/Downloads/output_references.txt"
-CONCATENATED_AUDIO_PATH = "/Users/saavedj/Downloads/concatenated_audio.mp3"
+TEXT_FILE_PATH = "/Users/saavedj/SimpleSolutions/text files/all_references.txt"
+OUTPUT_REFERENCES_PATH = "/Users/saavedj/Downloads/current-video/output_references.txt"
+CONCATENATED_AUDIO_PATH = "/Users/saavedj/Downloads/current-video/concatenated_audio.mp3"
 
 
 def main():
