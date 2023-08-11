@@ -8,8 +8,11 @@ AUDIO_DIRECTORY = "/Users/saavedj/SimpleSolutions/music-licensed"
 TEXT_FILE_PATH = "/Users/saavedj/SimpleSolutions/text files/all_references.txt"
 OUTPUT_REFERENCES_PATH = "/Users/saavedj/Downloads/current-video/output_references.txt"
 CONCATENATED_AUDIO_PATH = "/Users/saavedj/Downloads/current-video/concatenated_audio.mp3"
-
-
+PROMOTIONS = """
+Music promoted by https://www.chosic.com/free-music/all/
+Creative Commons CC BY-SA 3.0
+https://creativecommons.org/licenses/by-sa/3.0/
+"""
 def main():
     text_blocks = read_text_blocks(TEXT_FILE_PATH)
 
@@ -106,17 +109,20 @@ def concatenate_audio(selected_files, audio_directory):
 
 def generate_output_references(selected_files, text_blocks):
     output_references = []
+    output_references.append(PROMOTIONS.strip())
     total_duration = 0
 
     for file in selected_files:
         duration_seconds = len(AudioSegment.from_file(
             os.path.join(AUDIO_DIRECTORY, file))) / 1000
 
+        # Match reference to the current file and add to output list
         try:
-            index = int(os.path.splitext(file)[0])
+            index = int(os.path.splitext(file)[0]) # Index is the filename
             if 0 <= index < len(text_blocks):
                 position = f"{int(total_duration // 60):02}:{int(total_duration % 60):02}"
-                output_references.append(f"{position} {text_blocks[index]}")
+                first_line = text_blocks[index].split('\n')[0]
+                output_references.append(f"{position} {first_line}")
                 total_duration += duration_seconds
         except ValueError:
             print(f"Skipped: {file} (Not in number format)")
