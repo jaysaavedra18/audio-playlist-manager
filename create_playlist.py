@@ -65,21 +65,28 @@ def select_audio_files_with_dialog():
             initialdir=AUDIO_DIRECTORY, title="Select Audio Files", filetypes=(("Audio Files", "*.mp3 *.wav"),)
         )
 
-        total_size, total_length = get_audio_info(selected_files)
-        print(f"Number of files: {len(selected_files)}")
-        print(f"Total size: {total_size / (1024 * 1024):.2f} MB")
-        print(f"Total length: {format_time(total_length)}")
-
         while True:
+            # Display selected file(s) data
+            total_size, total_length = get_audio_info(selected_files)
+            print(f"Number of files: {len(selected_files)}")
+            print(f"Total size: {total_size / (1024 * 1024):.2f} MB")
+            print(f"Total length: {format_time(total_length)}")
+
+            # Prompt user for choice
             choice = input(
-                "Are you satisfied with the length of the audio? (y/n): ").lower()
+                "Are you satisfied with the length of the audio? (y/n/r): ").lower()
             if choice == 'y':
                 root.destroy()  # Close the file dialog window
                 return [os.path.basename(file) for file in selected_files]
             elif choice == 'n':
+                removed_file = selected_files[-1]  # Get the last file
+                selected_files = selected_files[:-1] # Remove the last file
+                print(f"Removed file: {os.path.basename(removed_file)}")
+                continue
+            elif choice == 'r':
                 break  # Exit the input loop and re-enter the file explorer.
             else:
-                print("Invalid choice. Please enter 'y' or 'n'.")
+                print("Invalid choice. Please enter 'y' or 'n' or 'r' for reselect.")
 
 
 def select_random_files(audio_files, num_files):
