@@ -10,9 +10,19 @@ OUTPUT_REFERENCES_PATH = "/Users/saavedj/Downloads/current-video/output_referenc
 CONCATENATED_AUDIO_PATH = "/Users/saavedj/Downloads/current-video/concatenated_audio.mp3"
 PROMOTIONS = """
 Music promoted by https://www.chosic.com/free-music/all/
-Creative Commons CC BY-SA 3.0
+
 https://creativecommons.org/licenses/by-sa/3.0/
+Creative Commons CC BY-SA 3.0
+Creative Commons Attribution 3.0 Unported License
+Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)
+Creative Commons — Attribution-NoDerivs 3.0 Unported — CC BY-ND 3.0
+
+https://creativecommons.org/licenses/by/4.0/
+Creative Commons CC BY 4.0
+Attribution 4.0 International (CC BY 4.0)
 """
+
+
 def main():
     text_blocks = read_text_blocks(TEXT_FILE_PATH)
 
