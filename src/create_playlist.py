@@ -11,13 +11,13 @@ from get_songs import write_first_lines_to_file as update_songs, get_unique_file
 today_date = datetime.date.today()
 date_string = today_date.strftime("%Y-%m-%d")
 
-# Define file paths
+# Define directory paths
 HOME_DIRECTORY = "/Users/saavedj"
 BASE_DIRECTORY = os.path.join(HOME_DIRECTORY, "SimpleSolutions")
 AUDIO_DIRECTORY = os.path.join(BASE_DIRECTORY, "music")
 DATA_DIRECTORY = os.path.join(BASE_DIRECTORY, "data")
 
-# Specific file paths
+# Define file paths
 TEXT_FILE_PATH = os.path.join(DATA_DIRECTORY, "references.txt")
 SONGS_PATH = os.path.join(DATA_DIRECTORY, "songs.txt")
 output_references_path = os.path.join(HOME_DIRECTORY, "Downloads", "current-video", f"output-references-{date_string}.txt")
@@ -29,14 +29,14 @@ PROMOTIONS = """
 Music promoted by https://www.chosic.com/free-music/all/
 
 https://creativecommons.org/licenses/by-sa/3.0/
-Creative Commons CC BY-SA 3.0
-Creative Commons Attribution 3.0 Unported License
-Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)
-Creative Commons — Attribution-NoDerivs 3.0 Unported — CC BY-ND 3.0
-
 https://creativecommons.org/licenses/by/4.0/
-Creative Commons CC BY 4.0
-Attribution 4.0 International (CC BY 4.0)
+
+- Creative Commons CC BY-SA 3.0
+- Creative Commons Attribution 3.0 Unported License
+- Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)
+- Creative Commons — Attribution-NoDerivs 3.0 Unported — CC BY-ND 3.0
+- Creative Commons CC BY 4.0
+- Attribution 4.0 International (CC BY 4.0)
 """
 
 
@@ -129,9 +129,13 @@ def select_audio_files_with_dialog():
             filetypes=(("Audio Files", "*.mp3 *.wav"),)
         )
 
+        # Calculate selected file(s) data
+        total_size, total_length = get_audio_info(selected_files)
+
         while True:
+            last_file = selected_files[-1]  # Get the last file
+
             # Display selected file(s) data
-            total_size, total_length = get_audio_info(selected_files)
             print(f"Number of files: {len(selected_files)}")
             print(f"Total size: {total_size / (1024 * 1024):.2f} MB")
             print(f"Total length: {format_time(total_length)}")
@@ -141,11 +145,13 @@ def select_audio_files_with_dialog():
                 "Are you satisfied with the length of the audio? (y/n/r): ").lower()
             if choice == 'y':
                 root.destroy()  # Close the file dialog window
+                print("We are putting together your playlist.\nOne moment please.")
                 return [os.path.basename(file) for file in selected_files]
             elif choice == 'n':
-                removed_file = selected_files[-1]  # Get the last file
+                total_size -= os.path.getsize(last_file)
+                total_length -= AudioSegment.from_file(last_file).duration_seconds
                 selected_files = selected_files[:-1] # Remove the last file
-                print(f"Removed file: {os.path.basename(removed_file)}")
+                print(f"Removed file: {os.path.basename(last_file)}")
                 continue
             elif choice == 'r':
                 break  # Exit the input loop and re-enter the file explorer.
@@ -180,7 +186,7 @@ def generate_output_references(selected_files, text_blocks):
         list: List of output references.
     """
     output_references = []
-    output_references.append(PROMOTIONS.strip())
+    output_references.append(PROMOTIONS)
 
     total_duration = 0 # Initialize total duration
 
