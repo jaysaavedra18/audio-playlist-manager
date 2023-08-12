@@ -16,12 +16,14 @@ HOME_DIRECTORY = "/Users/saavedj"
 BASE_DIRECTORY = os.path.join(HOME_DIRECTORY, "SimpleSolutions")
 AUDIO_DIRECTORY = os.path.join(BASE_DIRECTORY, "music")
 DATA_DIRECTORY = os.path.join(BASE_DIRECTORY, "data")
+ASSETS_DIRECTORY = os.path.join(BASE_DIRECTORY, "yt_assets")
+ARCHIVES_DIRECTORY = os.path.join(ASSETS_DIRECTORY, f"{date_string}")
 
 # Define file paths
 TEXT_FILE_PATH = os.path.join(DATA_DIRECTORY, "references.txt")
 SONGS_PATH = os.path.join(DATA_DIRECTORY, "songs.txt")
-output_references_path = os.path.join(HOME_DIRECTORY, "Downloads", "current-video", f"output-references-{date_string}.txt")
-concatenated_audio_path = os.path.join(HOME_DIRECTORY, "Downloads", "current-video", f"concatenated-audio-{date_string}.mp3")
+output_references_path = os.path.join(ASSETS_DIRECTORY, f"output-references-{date_string}.txt")
+concatenated_audio_path = os.path.join(ASSETS_DIRECTORY, f"concatenated-audio-{date_string}.mp3")
 
 
 # Promotions, Licenses, Attributions
@@ -75,6 +77,9 @@ def main():
     # Export the concatenated audio to the specified path
     export_concatenated_audio(concatenated_audio, concatenated_audio_path)
 
+def make_archive_directory():
+    if not os.path.exists(ARCHIVES_DIRECTORY):
+        os.mkdir(ARCHIVES_DIRECTORY)
 
 def read_text_blocks(file_path):
     """
@@ -216,6 +221,7 @@ def generate_output_references(selected_files, text_blocks):
 
 
 def save_output_references(output_references, file_path):
+    make_archive_directory() # Create the daily archive if does not exist
     with open(get_unique_file_name(file_path), "w") as output_file:
         for reference in output_references:
             output_file.write(reference + "\n\n")
