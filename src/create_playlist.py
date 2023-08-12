@@ -5,7 +5,7 @@ from pydub import AudioSegment
 from tkinter import Tk, filedialog
 
 # Import functions from the get_songs module and rename the function
-from get_songs import write_first_lines_to_file as update_songs
+from get_songs import write_first_lines_to_file as update_songs, get_unique_file_name
 
 # Get today's date
 today_date = datetime.date.today()
@@ -210,13 +210,13 @@ def generate_output_references(selected_files, text_blocks):
 
 
 def save_output_references(output_references, file_path):
-    with open(file_path, "w") as output_file:
+    with open(get_unique_file_name(file_path), "w") as output_file:
         for reference in output_references:
             output_file.write(reference + "\n\n")
 
 
 def export_concatenated_audio(concatenated_audio, file_path):
-    concatenated_audio.export(file_path, format="mp3")
+    concatenated_audio.export(get_unique_file_name(file_path), format="mp3")
 
 
 if __name__ == "__main__":
