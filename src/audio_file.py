@@ -146,6 +146,42 @@ def add_audio_files(confirmation):
     open(TEXT_FILE_PATH, "w").close() # Remove input data onced transformed and written
 
 
+def rename_files_in_directory(directory_path):
+    # Ensure the directory path is valid
+    if not os.path.isdir(directory_path):
+        print("Invalid directory path.")
+        return
+
+    # Get a list of files in the directory
+    files = [file for file in os.listdir(directory_path) if os.path.isfile(
+        os.path.join(directory_path, file))]
+    audio_files = read_json()
+    new_names = [audio_file.song_name for audio_file in audio_files]
+
+    # Iterate over the files in the directory
+    for file in files:
+        # Extract the index from the filename
+        file_name, file_extension = os.path.splitext(file)
+        try:
+            index = int(file_name)
+        except ValueError:
+            # Skip files that don't have a numeric index
+            continue
+
+        # Check if the index is within the range of new_names
+        if 0 <= index < len(new_names):
+            new_name = new_names[index]
+            new_file_name = f"{new_name}{file_extension}"
+            old_file_path = os.path.join(directory_path, file)
+            new_file_path = os.path.join(directory_path, new_file_name)
+
+            # Rename the file
+            os.rename(old_file_path, new_file_path)
+            print(f"Renamed '{file}' to '{new_file_name}'")
+
+
+
 #Execute
-add_audio_files(input('Are you sure? type \'confirm\' if so: '))
+# add_audio_files(input('Are you sure? type \'confirm\' if so: '))
 # for audio_file in read_json(): audio_file.print_info()
+# rename_files_in_directory(MUSIC_PATH)
