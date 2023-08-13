@@ -8,6 +8,7 @@ from text_file import read_text_blocks, get_unique_file_name, parse_text_block, 
 TEXT_FILE_PATH = "/Users/saavedj/SimpleSolutions/data/references.txt"
 MUSIC_PATH = '/Users/saavedj/SimpleSolutions/music'
 DATA_DIRECTORY = '/Users/saavedj/SimpleSolutions/data'
+MUSIC_DATA_PATH = os.path.join(DATA_DIRECTORY, "music_data.json")
 
 class AudioFile:
     def __init__(self, index, song_name, artist, artist_link, duration, filename, file_size, licenses, genre, moods):
@@ -21,6 +22,24 @@ class AudioFile:
         self.licenses = licenses
         self.genre = genre
         self.moods = moods
+
+    def print_info(self):
+        print(f"Index: {self.index}")
+        print(f"Song Name: {self.song_name}")
+        print(f"Artist: {self.artist}")
+        print(f"Artist Link: {self.artist_link}")
+        print(f"Duration: {self.duration}")
+        print(f"Filename: {self.filename}")
+        print(f"File Size: {self.file_size}")
+        print("Licenses:")
+        for license in self.licenses:
+            print(f"  - {license}")
+        print("Genre:")
+        for g in self.genre:
+            print(f"  - {g}")
+        print("Moods:")
+        for mood in self.moods:
+            print(f"  - {mood}")
 
 
 def get_audio_files(directory):
@@ -56,15 +75,30 @@ def format_time(seconds):
     return f"{hours:02}:{minutes:02}:{seconds:02}"
 
 
-def write_json(objects):
-    # Serialize to JSON and write to file
-    with open(os.path.join(DATA_DIRECTORY, "music_data.json"), "w") as json_file:
-        json.dump([vars(file) for file in objects], json_file, indent=4)
+def write_json(objects, output_path):
+    # Serialize to JSON
+    json_data = [vars(file) for file in objects]
+
+    # Determine the mode based on file existence
+    # if os.path.exists(output_path) and os.path.getsize(output_path) > 0:
+    if False: # Always overwrite
+        mode = "a"  # Append mode if the file exists and is not empty
+    else:
+        mode = "w"  # Write mode if the file does not exist or is empty
+
+    # Write JSON data to the file
+    with open(output_path, mode) as json_file:
+        json.dump(json_data, json_file, indent=4)
+
 
 def read_json():
-    # Read JSON data back into AudioFile objects
-    with open("music_data.json", "r") as json_file:
-        loaded_data = json.load(json_file)
+    try:
+        # Read JSON data back into AudioFile objects
+        with open(MUSIC_DATA_PATH, "r") as json_file:
+            loaded_data = json.load(json_file)
+    except json.JSONDecodeError:
+        # Handle empty JSON file or invalid JSON data
+        return []
 
     # Convert JSON data back to AudioFile objects
     loaded_audio_files = [AudioFile(**data) for data in loaded_data]
@@ -73,17 +107,16 @@ def read_json():
 def add_audio_files(confirmation):
     if confirmation.lower() != 'confirm':
         return  # Stop if we did not confirm
+    
+    print("Working on that data...")
 
-    audio_files = []
+    audio_files = read_json()
+    num_of_audio_files = len(audio_files)
     text_blocks = read_text_blocks('/Users/saavedj/SimpleSolutions/data/references.txt')
 
-    # text_blocks = ["""Crescent Moon by Purrple Cat | https://purrplecat.com/
-    # Music promoted by https://www.chosic.com/free-music/all/
-    # Creative Commons CC BY-SA 3.0
-    # https://creativecommons.org/licenses/by-sa/3.0/"""]
-    
     # Parse all data and store it in parsed set
-    for index, text_block in enumerate(text_blocks): 
+    for index, text_block in enumerate(text_blocks):
+        index += num_of_audio_files # Offset by existing objects
         # Get audio file data
         parsed_data = parse_text_block(text_block)
         filename = f"{index}.mp3"  # Use string formatting for the filename
@@ -107,10 +140,12 @@ def add_audio_files(confirmation):
         )
 
         audio_files.append(audio_file)
-        # delete_first_block(TEXT_FILE_PATH)
-
-    write_json(objects=audio_files)
+        print(f"Added {filename}.")
+        
+    write_json(objects=audio_files, output_path=MUSIC_DATA_PATH) # Append data
+    open(TEXT_FILE_PATH, "w").close() # Remove input data onced transformed and written
 
 
 #Execute
 add_audio_files(input('Are you sure? type \'confirm\' if so: '))
+# for audio_file in read_json(): audio_file.print_info()
