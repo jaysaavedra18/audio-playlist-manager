@@ -1,19 +1,19 @@
 import os
 import random
 import datetime
-from pydub import AudioSegment
 from tkinter import Tk, filedialog
+from pydub import AudioSegment
 
 # Import functions from the get_songs module and rename the function
-from get_songs import write_first_lines_to_file as update_songs, get_unique_file_name
+from text_file import get_unique_file_name, read_text_blocks
+from audio_file import get_audio_files, get_audio_info, concatenate_audio, export_audio, format_time
 
 # Get today's date
 today_date = datetime.date.today()
 date_string = today_date.strftime("%Y-%m-%d")
 
 # Define directory paths
-HOME_DIRECTORY = "/Users/saavedj"
-BASE_DIRECTORY = os.path.join(HOME_DIRECTORY, "SimpleSolutions")
+BASE_DIRECTORY = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) # Equivalent to 'cd .. && pwd'
 AUDIO_DIRECTORY = os.path.join(BASE_DIRECTORY, "music")
 DATA_DIRECTORY = os.path.join(BASE_DIRECTORY, "data")
 ASSETS_DIRECTORY = os.path.join(BASE_DIRECTORY, "yt_assets")
@@ -75,51 +75,12 @@ def main():
     save_output_references(output_references, output_references_path)
 
     # Export the concatenated audio to the specified path
-    export_concatenated_audio(concatenated_audio, concatenated_audio_path)
+    export_audio(concatenated_audio, concatenated_audio_path)
 
 def make_archive_directory():
     if not os.path.exists(ARCHIVES_DIRECTORY):
         os.mkdir(ARCHIVES_DIRECTORY)
 
-def read_text_blocks(file_path):
-    """
-    Read text blocks from a file and split them based on double line breaks.
-    Writes the name & artist of all songs to data/songs.txt.
-
-    Args:
-        file_path (str): The path to the file containing text blocks.
-
-    Returns:
-        list: A list of text blocks, where each block is a string representing
-              a segment of text separated by double line breaks.
-
-    Note:
-        This function assumes that the file contains text blocks separated by
-        two consecutive newline characters. If the file does not
-        follow this format, the function behavior may not be as expected.
-
-    """
-    with open(file_path, "r") as file:
-        text_blocks = file.read().split("\n\n")
-        update_songs(text_blocks, SONGS_PATH)
-        return text_blocks
-
-def get_audio_files(directory):
-    return [f for f in os.listdir(directory) if f.endswith(".mp3") or f.endswith(".wav")]
-
-
-def get_audio_info(audio_files):
-    total_size = sum(os.path.getsize(file) for file in audio_files)
-    total_length = sum(AudioSegment.from_file(
-        file).duration_seconds for file in audio_files)
-    return total_size, total_length
-
-
-def format_time(seconds):
-    hours = int(seconds // 3600)
-    minutes = int((seconds % 3600) // 60)
-    seconds = int(seconds % 60)
-    return f"{hours:02}:{minutes:02}:{seconds:02}"
 
 
 def select_audio_files_with_dialog():
@@ -153,8 +114,9 @@ def select_audio_files_with_dialog():
                 print("We are putting together your playlist.\nOne moment please.")
                 return [os.path.basename(file) for file in selected_files]
             elif choice == 'n':
-                total_size -= os.path.getsize(last_file)
-                total_length -= AudioSegment.from_file(last_file).duration_seconds
+                tsize, tlength = get_audio_info([last_file]) # Get removed file data
+                total_size -= tsize
+                total_length -= tlength
                 selected_files = selected_files[:-1] # Remove the last file
                 print(f"Removed file: {os.path.basename(last_file)}")
                 continue
@@ -166,17 +128,6 @@ def select_audio_files_with_dialog():
 
 def select_random_files(audio_files, num_files):
     return random.sample(audio_files, num_files)
-
-
-def concatenate_audio(selected_files, audio_directory):
-    concatenated_audio = AudioSegment.silent(duration=0)
-
-    for file in selected_files:
-        audio_path = os.path.join(audio_directory, file)
-        audio_segment = AudioSegment.from_file(audio_path)
-        concatenated_audio += audio_segment
-
-    return concatenated_audio
 
 
 def generate_output_references(selected_files, text_blocks):
@@ -226,9 +177,6 @@ def save_output_references(output_references, file_path):
         for reference in output_references:
             output_file.write(reference + "\n\n")
 
-
-def export_concatenated_audio(concatenated_audio, file_path):
-    concatenated_audio.export(get_unique_file_name(file_path), format="mp3")
 
 
 if __name__ == "__main__":
