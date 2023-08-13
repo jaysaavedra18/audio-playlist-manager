@@ -4,8 +4,7 @@ from tkinter import Tk, filedialog
 from pydub import AudioSegment
 
 # Import functions from the get_songs module and rename the function
-from file_utils import get_unique_file_name, read_text_blocks, get_audio_files, get_audio_info, concatenate_audio, export_audio, select_random_files
-from utils import format_time
+from file_utils import get_unique_file_name, read_text_blocks, get_audio_files, get_audio_info, concatenate_audio, export_audio, format_time
 from config import ASSETS_DIRECTORY, TEXT_FILE_PATH, AUDIO_DIRECTORY, DATE_STRING
 
 # Define paths/dirs
@@ -112,6 +111,10 @@ def select_audio_files_with_dialog():
                 break  # Exit the input loop and re-enter the file explorer.
             else:
                 print("Invalid choice. Please enter 'y' or 'n' or 'r' for reselect.")
+
+
+def select_random_files(audio_files, num_files):
+    return random.sample(audio_files, num_files)
 
 
 def generate_output_references(selected_files, text_blocks):
