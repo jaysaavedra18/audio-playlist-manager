@@ -81,7 +81,7 @@ def export_audio(audio, file_path):
     audio.export(get_unique_file_name(file_path), format="mp3")
 
 
-def format_time(seconds):
+def seconds_to_formatted_time(seconds):
     """
     EXPORTED!!!
     """
@@ -137,7 +137,7 @@ def add_audio_files():
         filepath = os.path.join(AUDIO_DIRECTORY, filename)
         audio_info = get_audio_info([filepath])
         file_size = f"{audio_info[0] / (1024 * 1024):.2f} MB"
-        duration = format_time(audio_info[1])
+        duration = seconds_to_formatted_time(audio_info[1])
 
         # Build audio file
         audio_file = AudioFile(

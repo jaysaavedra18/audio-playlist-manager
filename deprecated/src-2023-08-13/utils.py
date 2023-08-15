@@ -1,6 +1,6 @@
 # utils.py
 
-def format_time(seconds):
+def seconds_to_formatted_time(seconds):
     """
     Convert a time duration in seconds to a formatted string representing the time in hours, minutes, and seconds.
 

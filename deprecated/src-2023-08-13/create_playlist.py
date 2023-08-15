@@ -4,7 +4,7 @@ from tkinter import Tk, filedialog
 from pydub import AudioSegment
 
 # Import functions from the get_songs module and rename the function
-from file_utils import get_unique_file_name, read_text_blocks, get_audio_files, get_audio_info, concatenate_audio, export_audio, format_time
+from file_utils import get_unique_file_name, read_text_blocks, get_audio_files, get_audio_info, concatenate_audio, export_audio, seconds_to_formatted_time
 from config import ASSETS_DIRECTORY, TEXT_FILE_PATH, AUDIO_DIRECTORY, DATE_STRING
 
 # Define paths/dirs
@@ -91,7 +91,7 @@ def select_audio_files_with_dialog():
             # Display selected file(s) data
             print(f"Number of files: {len(selected_files)}")
             print(f"Total size: {total_size / (1024 * 1024):.2f} MB")
-            print(f"Total length: {format_time(total_length)}")
+            print(f"Total length: {seconds_to_formatted_time(total_length)}")
 
             # Prompt user for choice
             choice = input(

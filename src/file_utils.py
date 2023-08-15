@@ -123,7 +123,7 @@ def write_first_lines_to_file(text_blocks, output_file):
     text_blocks (list): A list of text blocks, where each block is a string with one or more lines.
     output_file (str): The path to the output file where the first lines will be written.
 
-    Notes:xs
+    Notes:
     - The output file is overwritten if it already exists; if it doesn't exist, it will be created.
     """
     with open(output_file, "w") as file:
@@ -241,15 +241,28 @@ def read_json(file_path, target_class):
 
 # General file input/output functions
 
-def select_random_files(files, file_count):
+def select_random_files(file_path, file_count):
     """
-    Selects a specified number of random files from a list of files.
+    Selects a specified number of random files from a directory.
 
     Args:
-        files (list): A list of file names from which to select random files.
+        file_path (str): Path to the directory containing the files.
         file_count (int): The number of random files to select.
 
     Returns:
         list: A list of randomly selected file names.
     """
+    files = [f for f in os.listdir(file_path) if f.endswith(
+        ".mp3") or f.endswith(".wav")]
     return random.sample(files, file_count)
+
+
+def make_directory(directory):
+    """
+    Creates a directory if it does not already exist.
+
+    Args:
+        directory (str): The path of the directory to create.
+    """
+    if not os.path.exists(directory):
+        os.mkdir(directory)
