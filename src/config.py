@@ -14,6 +14,7 @@ AUDIO_DIRECTORY = os.path.join(BASE_DIRECTORY, "music")
 DATA_DIRECTORY = os.path.join(BASE_DIRECTORY, "data")
 ASSETS_DIRECTORY = os.path.join(BASE_DIRECTORY, "yt_assets")
 ARCHIVES_DIRECTORY = os.path.join(ASSETS_DIRECTORY, f"{DATE_STRING}")
+DOWNLOADS_DIRECTORY = os.path.join(AUDIO_DIRECTORY, "music_downloads")
 
 # Define data file paths
 TEXT_FILE_PATH = os.path.join(DATA_DIRECTORY, "references.txt")
