@@ -4,6 +4,7 @@ import os
 import json
 import random
 from pydub import AudioSegment
+from audio_file import AudioFile
 
 # Audio input/output functions
 
@@ -205,7 +206,8 @@ def write_json(objects, file_path):
     file_path (str): The file_path (including the file name) where the JSON data will be written.
     """
     # Serialize to JSON
-    json_data = [vars(file) for file in objects]
+    json_data = [vars(obj) if not callable(
+        getattr(obj, "to_dict", None)) else obj.to_dict() for obj in objects]
 
     # Write JSON data to the file
     with open(file_path, "w") as json_file:
@@ -225,16 +227,22 @@ def read_json(file_path, target_class):
     If the JSON file is empty or invalid, an empty list is returned.
     """
     try:
-        # Read JSON data from the file
         with open(file_path, "r") as json_file:
             loaded_data = json.load(json_file)
+            # print("Loaded Data:", loaded_data)  # Print loaded data
     except (json.JSONDecodeError, FileNotFoundError):
-        # Handle empty JSON file or invalid JSON data
         return []
 
-    # Convert JSON data back to objects of the specified target_class
-    loaded_objects = [target_class(**data) for data in loaded_data]
+    loaded_objects = []
+    for data in loaded_data:
+        if "songs" in data:
+            songs = [AudioFile(**song_data) for song_data in data["songs"]]
+            data["songs"] = songs
+        loaded_objects.append(target_class(**data))
+
     return loaded_objects
+
+
 
 
 # file_io.py
@@ -266,3 +274,4 @@ def make_directory(directory):
     """
     if not os.path.exists(directory):
         os.mkdir(directory)
+

@@ -1,81 +1,146 @@
+import os
 import random
 from typing import List
 
 from audio_file import AudioFile
-from utils import formatted_time_to_seconds, seconds_to_formatted_time, bytes_to_formatted_size, formatted_size_to_bytes
-from file_utils import concatenate_audio, export_audio, make_directory, read_json
-from config import AUDIO_DIRECTORY, MUSIC_DATA_PATH, OUTPUT_PROMOTIONS_PATH, OUTPUT_PLAYLIST_PATH, ARCHIVES_DIRECTORY
+from utils import (
+    mmss_to_seconds,
+    seconds_to_mmss,
+    bytes_to_formatted_size,
+    formatted_size_to_bytes,
+)
+from file_utils import (
+    concatenate_audio,
+    export_audio,
+    make_directory,
+    read_json,
+    write_json,
+)
+from config import (
+    LIBRARY_DATA_PATH,
+    ASSETS_DIRECTORY,
+    ARCHIVES_DIRECTORY,
+    DATE_STRING,
+    PLAYLIST_DATA_PATH,
+    LIBRARY_DIRECTORY,
+)
 
-# Import audio files
-audio_files = read_json(MUSIC_DATA_PATH, AudioFile)
+# Import data
+audio_files = read_json(LIBRARY_DATA_PATH, AudioFile)
 
 
 class Playlist:
-    def __init__(self, title: str, songs: List[AudioFile] = None):
+    def __init__(self, title: str, songs: List[AudioFile] = None, promotions=None, date_created=None):
         self.title = title
         self.songs = songs or []
+        self.promotions = promotions or []
+        self.date_created = date_created or DATE_STRING
+        self.calculate_metrics()
+
+    def calculate_metrics(self):
         self.calculate_duration()
         self.calculate_file_size()
-        self.get_files()
-        self.promotions = []
-        self.catalog = audio_files
+        self.get_filenames()
+
+    def to_dict(self):
+        return {
+            "title": self.title,
+            "songs": [song.to_dict() for song in self.songs],
+            "promotions": self.promotions,
+            "date_created": self.date_created,
+        }
 
     def add_song(self, song: AudioFile):
         self.songs.append(song)
-        self.calculate_duration()
-        self.calculate_file_size()
+        self.calculate_metrics()
 
     def remove_song(self, song: AudioFile):
         self.songs.remove(song)
-        self.calculate_duration()
-        self.calculate_file_size()
+        self.calculate_metrics()
 
     def add_license(self, license_text: str):
         self.promotions.append(license_text)
 
     def calculate_duration(self):
-        self.total_duration = seconds_to_formatted_time(sum(formatted_time_to_seconds(song.duration) for song in self.songs))
+        for song in self.songs:
+            print(song.duration)
+
+        total_duration_seconds = sum(mmss_to_seconds(
+            song.duration) for song in self.songs)
+        self.total_duration = seconds_to_mmss(total_duration_seconds)
 
     def calculate_file_size(self):
-        self.total_file_size = bytes_to_formatted_size(sum(formatted_size_to_bytes(song.file_size) for song in self.songs))
+        total_file_size_bytes = sum(formatted_size_to_bytes(
+            song.file_size) for song in self.songs)
+        self.total_file_size = bytes_to_formatted_size(total_file_size_bytes)
 
-    def get_files(self):
+    def get_filenames(self):
         self.filenames = [song.filename for song in self.songs]
 
-    def create_playlist_by_random(self, song_count=24):
-        selected_songs = random.sample(audio_files, song_count)
-        self.songs = selected_songs
-        self.calculate_duration()
-        self.calculate_file_size()
+    # ideally i take out max_duration from arg3 to improve speed
+    def create_playlist_by_criteria(self, criteria_function, max_duration):
+        # random.shuffle(audio_files)
+        selected_songs = [song for song in audio_files if criteria_function(song)]
+        random.shuffle(selected_songs)
 
-    def create_playlist_by_genre(self, genre):
-        # Add AudioFiles to list if they match the genre
-        for audio_file in audio_files:
-            if genre in audio_file.genre:
-                self.add_song(audio_file)
-    
-    def create_playlist_by_mood(self, mood):
-        # Add AudioFiles to list if they match the mood
-        for audio_file in audio_files:
-            if mood in audio_file.mood:
-                self.add_song(audio_file)
+        playlist_duration = 0
+        self.songs = []
+
+        for song in selected_songs:
+            if playlist_duration + mmss_to_seconds(song.duration) <= max_duration:
+                self.add_song(song)
+                playlist_duration += mmss_to_seconds(song.duration)
+            else:
+                break
+
+    def add_songs_by_filename(self, filenames, max_duration):
+        playlist_duration = 0
+        self.songs = []
+
+        for song in audio_files:
+            if playlist_duration + mmss_to_seconds(song.duration) <= max_duration:
+                if song.filename in filenames:
+                    self.add_song(song)
+                    playlist_duration += mmss_to_seconds(song.duration)
+            else:
+                break
 
     def export_playlist(self):
-        # Create daily archive directory if dne
+        # Create daily archive directory if it doesn't exist
         make_directory(ARCHIVES_DIRECTORY)
-        self.get_files()
+        self.get_filenames()
+        output_path = os.path.join(ASSETS_DIRECTORY, f"{self.title}-{DATE_STRING}.mp3")
+        # Concatenate audio and export to ASSETS_DIRECTORY
+        concatenated_audio = concatenate_audio(self.filenames, LIBRARY_DIRECTORY)
+        export_audio(concatenated_audio, output_path)
 
-        # Concatenate audio and export to yt_assets
-        concatenated_audio = concatenate_audio(self.filenames, AUDIO_DIRECTORY)
-        export_audio(concatenated_audio, OUTPUT_PLAYLIST_PATH)
-
-        # Select necessary licenses and export to yt_assets
+        # Select necessary licenses and export to ASSETS_DIRECTORY
         for song in self.songs:
             for license in song.licenses:
                 if license not in self.promotions:
                     self.add_license(license)
-        with open(OUTPUT_PROMOTIONS_PATH, "w") as file:
-            for license in sorted(self.promotions, key=len):
+        
+        # Add line break in the description
+        self.add_license('\n\n')
+
+        # Create timestamps for songs
+        total_duration = 0
+        for song in self.songs:
+            timestamp = f"{seconds_to_mmss(total_duration)} {song.song_name} by {song.artist} | {song.artist_link}"
+            total_duration += mmss_to_seconds(song.duration)
+            self.add_license(timestamp)
+            print(timestamp)
+
+        # Write to the necessary files for audio and promotions
+        promotions_path = os.path.join(
+            ASSETS_DIRECTORY, f"{self.title}-promotions.txt")
+        with open(promotions_path, "w") as file:
+            for license in self.promotions:
                 file.write(license + "\n")
 
+        # Add new playlist file to data
+        playlist_files = read_json(PLAYLIST_DATA_PATH, Playlist)
+        playlist_files.append(self)
+        write_json(playlist_files, PLAYLIST_DATA_PATH)
 
+        print("successfully exported your playlist :D ")

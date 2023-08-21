@@ -1,11 +1,8 @@
 # __main__.py
 
-from playlist import Playlist
+from config import LIBRARY_DATA_PATH
+from file_utils import read_json, write_json
 
-playlist = Playlist("My Sample Playlist")
-playlist.create_playlist_by_random(5) # Create a random 5 song playlist
-playlist.export_playlist()
+from audio_file import AudioFile
 
-print(playlist.total_duration)
-print(playlist.total_file_size)
-
+all_files = read_json(LIBRARY_DATA_PATH, AudioFile)

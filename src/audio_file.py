@@ -12,6 +12,20 @@ class AudioFile:
         self.genre = genre
         self.moods = moods
 
+    def to_dict(self):
+        return {
+            "index": self.index,
+            "song_name": self.song_name,
+            "artist": self.artist,
+            "artist_link": self.artist_link,
+            "duration": self.duration,
+            "filename": self.filename,
+            "file_size": self.file_size,
+            "licenses": self.licenses,
+            "genre": self.genre,
+            "moods": self.moods
+        }
+
     def print_info(self):
         print(f"Index: {self.index}")
         print(f"Song Name: {self.song_name}")
@@ -29,6 +43,16 @@ class AudioFile:
         print("Moods:")
         for mood in self.moods:
             print(f"  - {mood}")
+
+    def add_mood(self, mood):
+        if mood not in self.moods:
+            self.moods.append(mood)
+            print(f"Added '{mood}' mood to '{self.song_name}'")
+
+    def add_genre(self, genre):
+        if genre != self.genre:
+            self.genre = genre
+            print(f"Changed genre to '{genre}' for '{self.song_name}'")
 
 
 # def add_audio_files(): 

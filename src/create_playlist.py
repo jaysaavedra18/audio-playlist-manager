@@ -6,33 +6,11 @@ from tkinter import Tk, filedialog
 
 # Import functions from the get_songs module and rename the function
 from file_utils import read_text_blocks, get_audio_files, get_audio_info, concatenate_audio, export_audio, select_random_files
-from utils import seconds_to_formatted_time
-from config import TEXT_FILE_PATH, AUDIO_DIRECTORY, ARCHIVES_DIRECTORY, OUTPUT_PLAYLIST_PATH, OUTPUT_PROMOTIONS_PATH
-
-# # Define paths/dirs
-# ARCHIVES_DIRECTORY = os.path.join(ASSETS_DIRECTORY, f"{DATE_STRING}")
-# OUTPUT_PROMOTIONS_PATH = os.path.join(ASSETS_DIRECTORY, f"output-references-{DATE_STRING}.txt")
-# OUTPUT_PLAYLIST_PATH = os.path.join(ASSETS_DIRECTORY, f"playlist-{DATE_STRING}.mp3")
-
-
-# # Promotions, Licenses, Attributions (MOVED - playlist.py)
-# PROMOTIONS = """
-# Music promoted by https://www.chosic.com/free-music/all/
-
-# https://creativecommons.org/licenses/by-sa/3.0/
-# https://creativecommons.org/licenses/by/4.0/
-
-# - Creative Commons CC BY-SA 3.0
-# - Creative Commons Attribution 3.0 Unported License
-# - Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)
-# - Creative Commons — Attribution-NoDerivs 3.0 Unported — CC BY-ND 3.0
-# - Creative Commons CC BY 4.0
-# - Attribution 4.0 International (CC BY 4.0)
-# """
+from utils import seconds_to_mmss
+from config import AUDIO_DIRECTORY, ARCHIVES_DIRECTORY
 
 
 def main():
-    text_blocks = read_text_blocks(TEXT_FILE_PATH)
 
     # Prompt user for their choice
     print("Choose an option:")
@@ -87,7 +65,7 @@ def select_audio_files_with_dialog():
             # Display selected file(s) data
             print(f"Number of files: {len(selected_files)}")
             print(f"Total size: {total_size / (1024 * 1024):.2f} MB")
-            print(f"Total length: {seconds_to_formatted_time(total_length)}")
+            print(f"Total length: {seconds_to_mmss(total_length)}")
 
             # Prompt user for choice
             choice = input(
