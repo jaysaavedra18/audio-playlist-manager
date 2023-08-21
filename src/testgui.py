@@ -95,92 +95,74 @@ class PlaylistCreatorFrame(tk.Frame):
             except ValueError:
                 print("Invalid time format. Please use the format mm:ss.")
 
-
+# Thinking of add create by artist as well, and maybe updating input to select from the possible values
 class CreateByFrame(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
-
+        # Create window label
         label = tk.Label(self, text="Create By...")
         label.pack()
-
-        genre_button = tk.Button(
-            self, text="Create By Genre", command=self.create_genre_playlist)
-        genre_button.pack()
-
-        mood_button = tk.Button(
-            self, text="Create By Mood", command=self.create_mood_playlist)
-        mood_button.pack()
-
-        random_button = tk.Button(
-            self, text="Create Random Playlist", command=self.create_random_playlist)
-        random_button.pack()
-
+        # Define users' options
+        options = [
+            ("Genre", "genre"),
+            ("Mood", "mood"),
+            ("Artist", "artist"),
+            ("Random", "random")
+        ]
+        # Create buttons for users' options
+        for text, arg in options:
+            button = tk.Button(self, text=text, command=lambda arg=arg: self.select_criteria(arg))
+            button.pack()
+        # Create return to main menu button
         back_button = tk.Button(
             self, text="Back to Playlist Creator", command=lambda: master.show_frame(PlaylistCreatorFrame))
         back_button.pack()
 
-    def create_random_playlist(self):
+    def select_criteria(self, arg):
+        print("select_criteria()")
+        criteria_function = None
+        if arg == "genre": criteria_function = self.genre_helper
+        elif arg == "mood": criteria_function = self.mood_helper
+        elif arg == "artist": criteria_function = self.artist_helper
+        self.create_playlist(criteria_function=criteria_function, arg=arg)
+
+    def create_playlist(self, criteria_function=None, arg=None):
+        print("create_playlist()")
+        print(criteria_function)
+        print(arg)
+
+        if criteria_function:
+            criteria = simpledialog.askstring(
+                "Enter Criteria", f"Enter the {arg}:")
+            if not criteria:
+                return
+        else:
+            criteria = None
+
         max_duration = self.get_time_input()
         title = simpledialog.askstring(
             "Playlist Title", "Enter the title of your playlist:")
         if not title:
-            pass
+            return
+
+        playlist = Playlist(title=title)
+        playlist.create_playlist_by_criteria(
+            criteria_function=lambda song: criteria_function(
+                song, criteria) if criteria_function else True,
+            max_duration=max_duration)
+        playlist.export_playlist()
+
+    @staticmethod
+    def genre_helper(song, genre):
+        return genre in song.genre
+
+    @staticmethod
+    def mood_helper(song, mood):
+        return mood in song.moods
     
-        def ignore_helper(arg):
-            return True if arg else False
-        
-        playlist = Playlist(title=title)
-        playlist.create_playlist_by_criteria(
-            criteria_function=ignore_helper, max_duration=max_duration)
-        playlist.export_playlist()
-        
-    def create_genre_playlist(self):
-        # Prompt user for genre
-        genre = simpledialog.askstring(
-            "Enter Genre", "Enter the genre you're looking for:")
-        if not genre:
-            pass
-        # Prompt user to enter max playlist duration
-        max_duration = self.get_time_input()
-        # Prompt user for playlist name
-        title = simpledialog.askstring(
-            "Playlist Title", "Enter the title of your playlist:")
-        if not title:
-            pass
-
-        def genre_helper(song):
-            return True if genre in song.genre else False
-
-        # Create playlist object
-        playlist = Playlist(title=title)
-        playlist.create_playlist_by_criteria(
-            criteria_function=genre_helper, max_duration=max_duration)
-        playlist.export_playlist()
-
-    def create_mood_playlist(self):
-        # Prompt user for mood
-        mood = simpledialog.askstring(
-            "Enter Mood", "Enter the mood you're looking for:")
-        if not mood:
-            pass
-        # Prompt user to enter max playlist duration
-        max_duration = self.get_time_input()
-        # Prompt user for playlist name
-        title = simpledialog.askstring(
-            "Playlist Title", "Enter the title of your playlist:")
-        if not title:
-            pass
-
-        def mood_helper(song):
-            return True if mood in song.moods else False
-
-        if max_duration is not None:
-            # Create playlist object
-            playlist = Playlist(title=title)
-            playlist.create_playlist_by_criteria(
-                criteria_function=mood_helper, max_duration=max_duration)
-            playlist.export_playlist()
-
+    @staticmethod
+    def artist_helper(song, artist):
+        return song.artist.lower() == artist.lower()
 
     def get_time_input(self):
         while True:
