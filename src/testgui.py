@@ -125,13 +125,14 @@ class CreateByFrame(tk.Frame):
             "Playlist Title", "Enter the title of your playlist:")
         if not title:
             pass
+    
+        def ignore_helper(arg):
+            return True if arg else False
+        
         playlist = Playlist(title=title)
         playlist.create_playlist_by_criteria(
-            criteria_function=self.ignore_helper, max_duration=max_duration)
+            criteria_function=ignore_helper, max_duration=max_duration)
         playlist.export_playlist()
-    
-    def ignore_helper(self, arg):
-        return True if arg else False
         
     def create_genre_playlist(self):
         # Prompt user for genre
@@ -147,10 +148,13 @@ class CreateByFrame(tk.Frame):
         if not title:
             pass
 
+        def genre_helper(song):
+            return True if genre in song.genre else False
+
         # Create playlist object
         playlist = Playlist(title=title)
         playlist.create_playlist_by_criteria(
-            criteria_function=self.ignore_helper, max_duration=max_duration)
+            criteria_function=genre_helper, max_duration=max_duration)
         playlist.export_playlist()
 
     def create_mood_playlist(self):
@@ -167,12 +171,16 @@ class CreateByFrame(tk.Frame):
         if not title:
             pass
 
+        def mood_helper(song):
+            return True if mood in song.moods else False
+
         if max_duration is not None:
             # Create playlist object
             playlist = Playlist(title=title)
             playlist.create_playlist_by_criteria(
-                criteria_function=self.ignore_helper, max_duration=max_duration)
+                criteria_function=mood_helper, max_duration=max_duration)
             playlist.export_playlist()
+
 
     def get_time_input(self):
         while True:
