@@ -50,8 +50,8 @@ class AudioFile:
             print(f"Added '{mood}' mood to '{self.song_name}'")
 
     def add_genre(self, genre):
-        if genre != self.genre:
-            self.genre = genre
+        if genre not in self.genre:
+            self.genre.append(genre)
             print(f"Changed genre to '{genre}' for '{self.song_name}'")
 
 

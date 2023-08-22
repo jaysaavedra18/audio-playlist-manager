@@ -2,6 +2,9 @@
 
 import os
 import datetime
+# from file_utils import read_json
+# from audio_file import AudioFile
+
 
 # Get today's date
 today_date = datetime.date.today()
@@ -21,3 +24,6 @@ REFERENCES_PATH = os.path.join(DATA_DIRECTORY, "references.txt")
 LIBRARY_PATH = os.path.join(DATA_DIRECTORY, "library.txt")
 LIBRARY_DATA_PATH = os.path.join(DATA_DIRECTORY, "library_data.json")
 PLAYLIST_DATA_PATH = os.path.join(DATA_DIRECTORY, "playlist_data.json")
+
+# Import audio files
+# audio_files = read_json(LIBRARY_DATA_PATH, AudioFile)
