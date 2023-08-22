@@ -1,8 +1,14 @@
 # __main__.py
+from gui import Application
 
-from config import LIBRARY_DATA_PATH
-from file_utils import read_json, write_json
 
-from audio_file import AudioFile
+def main():
+    # Create an instance of your Application class
+    app = Application()
 
-all_files = read_json(LIBRARY_DATA_PATH, AudioFile)
+    # Start the main loop of the GUI framework
+    app.mainloop()
+
+
+if __name__ == "__main__":
+    main()
