@@ -53,7 +53,7 @@ class MainMenuFrame(tk.Frame):
         playlist_button.pack()
 
         option2_button = tk.Button(
-            self, text="MP3 Downloader", command=lambda: master.show_frame(Option2Frame))
+            self, text="MP3 Downloader", command=lambda: master.show_frame(MP3DownloaderFrame))
         option2_button.pack()
 
         option3_button = tk.Button(
@@ -205,17 +205,9 @@ class CreateByFrame(tk.Frame):
                 print("Invalid time format. Please use the format hh:mm:ss.")
 
 
-class Option2Screen:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("MP3 Downloader")
-
-        label = tk.Label(root, text="Download an MP3")
-        label.pack()
-
-        back_button = tk.Button(
-            root, text="Back to Main Menu", command=self.show_main_menu)
-        back_button.pack()
+class MP3DownloaderFrame(tk.Frame):
+    def __init__(self, master):
+        super().__init__(master)
 
 
 class SongLibraryFrame(tk.Frame):
