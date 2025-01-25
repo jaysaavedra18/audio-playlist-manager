@@ -18,7 +18,7 @@ from file_utils import (
 )
 from config import (
     LIBRARY_DATA_PATH,
-    ARCHIVES_DIRECTORY,
+    DAILY_PLAYLIST_DIRECTORY,
     DATE_STRING,
     PLAYLIST_DATA_PATH,
     LIBRARY_DIRECTORY,
@@ -105,14 +105,14 @@ class Playlist:
 
     def export_playlist(self):
         # Create daily archive directory if it doesn't exist
-        make_directory(ARCHIVES_DIRECTORY)
+        make_directory(DAILY_PLAYLIST_DIRECTORY)
         self.get_filenames()
-        output_path = os.path.join(ARCHIVES_DIRECTORY, f"{self.title}-{DATE_STRING}.mp3")
-        # Concatenate audio and export to ASSETS_DIRECTORY
+        output_path = os.path.join(DAILY_PLAYLIST_DIRECTORY, f"{self.title}-{DATE_STRING}.mp3")
+        # Concatenate audio and export to the daily playlist directory
         concatenated_audio = concatenate_audio(self.filenames, LIBRARY_DIRECTORY)
         export_audio(concatenated_audio, output_path)
 
-        # Select necessary licenses and export to ASSETS_DIRECTORY
+        # Select necessary licenses and export to the daily playlist directory
         for song in self.songs:
             for license in song.licenses:
                 if license not in self.promotions:
@@ -131,7 +131,7 @@ class Playlist:
 
         # Write to the necessary files for audio and promotions
         promotions_path = os.path.join(
-            ARCHIVES_DIRECTORY, f"{self.title}-promotions.txt")
+            DAILY_PLAYLIST_DIRECTORY, f"{self.title}-promotions.txt")
         with open(promotions_path, "w") as file:
             for license in self.promotions:
                 file.write(license + "\n")

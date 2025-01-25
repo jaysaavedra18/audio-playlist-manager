@@ -15,8 +15,7 @@ DATE_STRING = today_date.strftime("%Y-%m-%d")
 BASE_DIRECTORY = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 AUDIO_DIRECTORY = os.getenv("AUDIO_DIRECTORY") # Set environment variable in .env file
 DATA_DIRECTORY = os.path.join(BASE_DIRECTORY, "data")
-ASSETS_DIRECTORY = os.path.join(AUDIO_DIRECTORY, "output")
-ARCHIVES_DIRECTORY = os.path.join(ASSETS_DIRECTORY, f"{DATE_STRING}")
+DAILY_PLAYLIST_DIRECTORY = os.path.join(AUDIO_DIRECTORY, "output", f"{DATE_STRING}")
 DOWNLOADS_DIRECTORY = os.path.join(AUDIO_DIRECTORY, "misc")
 LIBRARY_DIRECTORY = os.path.join(AUDIO_DIRECTORY, "lofi")
 
