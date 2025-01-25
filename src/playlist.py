@@ -18,7 +18,6 @@ from file_utils import (
 )
 from config import (
     LIBRARY_DATA_PATH,
-    ASSETS_DIRECTORY,
     ARCHIVES_DIRECTORY,
     DATE_STRING,
     PLAYLIST_DATA_PATH,
@@ -65,8 +64,7 @@ class Playlist:
         for song in self.songs:
             print(song.duration)
 
-        total_duration_seconds = sum(mmss_to_seconds(
-            song.duration) for song in self.songs)
+        total_duration_seconds = sum(mmss_to_seconds(song.duration) for song in self.songs)
         self.total_duration = seconds_to_mmss(total_duration_seconds)
 
     def calculate_file_size(self):
@@ -109,7 +107,7 @@ class Playlist:
         # Create daily archive directory if it doesn't exist
         make_directory(ARCHIVES_DIRECTORY)
         self.get_filenames()
-        output_path = os.path.join(ASSETS_DIRECTORY, f"{self.title}-{DATE_STRING}.mp3")
+        output_path = os.path.join(ARCHIVES_DIRECTORY, f"{self.title}-{DATE_STRING}.mp3")
         # Concatenate audio and export to ASSETS_DIRECTORY
         concatenated_audio = concatenate_audio(self.filenames, LIBRARY_DIRECTORY)
         export_audio(concatenated_audio, output_path)
@@ -133,7 +131,7 @@ class Playlist:
 
         # Write to the necessary files for audio and promotions
         promotions_path = os.path.join(
-            ASSETS_DIRECTORY, f"{self.title}-promotions.txt")
+            ARCHIVES_DIRECTORY, f"{self.title}-promotions.txt")
         with open(promotions_path, "w") as file:
             for license in self.promotions:
                 file.write(license + "\n")
