@@ -1,40 +1,39 @@
 # audio_io.py
-
-import os
+"""Provides functions for audio input/output operations (read, write, concat)."""
 import json
+import os
 import random
+
 from pydub import AudioSegment
+
 from audio_file import AudioFile
 
 # Audio input/output functions
 
-def get_audio_files(directory):
-    """
-    Retrieve a list of audio file names (MP3 and WAV) from the specified directory.
+def get_audio_files(directory: str) -> list:
+    """Retrieve a list of audio file names (MP3 and WAV) from the specified directory.
 
-    Parameters:
+    Parameters
+    ----------
     directory (str): The path to the directory containing the audio files.
 
-    Returns:
+    Returns
+    -------
     list: A list audio files (MP3 and WAV) found in the specified directory.
+
     """
-    return [f for f in os.listdir(directory) if f.endswith(".mp3") or f.endswith(".wav")]
+    return [f for f in os.listdir(directory) if f.endswith((".mp3", ".wav"))]
 
 
 def get_audio_info(audio_files):
     """
-    Calculate the total size and length of audio files provided as either a single file path string
-    or a list of file path strings.
+    Calculate the total size (bytes) and length (seconds) of audio files.
 
     Parameters:
-    audio_files (Union[str, List[str]]): A file path string or a list of file path strings.
-        If a single file path is provided as a string, it will be treated as a list containing
-        that single file path.
+    audio_files (Union[str, List[str]]): A file path or a list of file paths.
 
     Returns:
-    tuple: A tuple containing the total size (in bytes) and the total length (in seconds) of the
-           audio files. The size represents the sum of the file sizes, and the length represents
-           the sum of the audio durations for all the files.
+    tuple: Total size in bytes and total length in seconds of the audio files.
     """
     # If a single file path is provided as a string, convert it to a list
     if isinstance(audio_files, str):
