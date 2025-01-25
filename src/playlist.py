@@ -108,7 +108,7 @@ class Playlist:
         # Create daily archive directory if it doesn't exist
         make_directory(ARCHIVES_DIRECTORY)
         self.get_filenames()
-        output_path = os.path.join(ASSETS_DIRECTORY, f"{self.title}-{DATE_STRING}.mp3")
+        output_path = os.path.join(ARCHIVES_DIRECTORY, f"{self.title}-{DATE_STRING}.mp3")
         # Concatenate audio and export to ASSETS_DIRECTORY
         concatenated_audio = concatenate_audio(self.filenames, LIBRARY_DIRECTORY)
         export_audio(concatenated_audio, output_path)
