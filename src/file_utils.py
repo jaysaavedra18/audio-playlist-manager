@@ -16,9 +16,7 @@ def get_audio_files(directory):
     directory (str): The path to the directory containing the audio files.
 
     Returns:
-    list: A list of strings representing the names of audio files (MP3 and WAV)
-          found in the specified directory. Only file names with the extensions
-          '.mp3' or '.wav' are included in the list.
+    list: A list audio files (MP3 and WAV) found in the specified directory.
     """
     return [f for f in os.listdir(directory) if f.endswith(".mp3") or f.endswith(".wav")]
 
