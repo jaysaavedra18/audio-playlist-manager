@@ -11,30 +11,12 @@ from audio_file import AudioFile
 # Audio input/output functions
 
 def get_audio_files(directory: str) -> list:
-    """Retrieve a list of audio file names (MP3 and WAV) from the specified directory.
-
-    Parameters
-    ----------
-    directory (str): The path to the directory containing the audio files.
-
-    Returns
-    -------
-    list: A list audio files (MP3 and WAV) found in the specified directory.
-
-    """
+    """Retrieve a list of audio file names (MP3 and WAV) from the specified directory."""
     return [f for f in os.listdir(directory) if f.endswith((".mp3", ".wav"))]
 
 
-def get_audio_info(audio_files):
-    """
-    Calculate the total size (bytes) and length (seconds) of audio files.
-
-    Parameters:
-    audio_files (Union[str, List[str]]): A file path or a list of file paths.
-
-    Returns:
-    tuple: Total size in bytes and total length in seconds of the audio files.
-    """
+def get_audio_info(audio_files: list) -> tuple:
+    """Calculate the total size (bytes) and length (seconds) of audio files."""
     # If a single file path is provided as a string, convert it to a list
     if isinstance(audio_files, str):
         audio_files = [audio_files]
@@ -45,17 +27,10 @@ def get_audio_info(audio_files):
     return total_size, total_length
 
 
-def concatenate_audio(selected_files, audio_directory):
+def concatenate_audio(selected_files: list, audio_directory: str) -> AudioSegment:
     """
-    Concatenate multiple audio files specified in the 'selected_files' list.
+    Concatenate multiple audio files specified in the 'selected_files' list into one AudioSegment.
     
-    Parameters:
-    selected_files (list): A list of audio file names (strings) to be concatenated.
-    audio_directory (str): The directory where the audio files are located.
-
-    Returns:
-    AudioSegment: An AudioSegment object containing the concatenated audio from the specified files.
-
     Notes:
     - The 'selected_files' list should contain the names of the audio files (e.g., ["file1.mp3", "file2.wav"]).
     - The concatenation order follows the order in the 'selected_files' list.
@@ -71,22 +46,9 @@ def concatenate_audio(selected_files, audio_directory):
     return concatenated_audio
 
 
-def export_audio(audio, file_path):
-    """
-    Export an AudioSegment object to an MP3 audio file at the specified file path.
-    
-    Parameters:
-    audio (AudioSegment): An AudioSegment object to be exported as an MP3 file.
-    file_path (str): The desired file path (including the file name) for the exported MP3 file.
-    
-    Notes:
-    - The exported audio file will be in MP3 format.
-    - The function uses the 'get_unique_file_name' function to ensure that the exported file has a
-      unique name in the specified file path, to prevent overwriting existing files.
-    """
+def export_audio(audio: AudioSegment, file_path: str) -> None:
+    """Export an AudioSegment object to an MP3 audio file at the specified file path."""
     audio.export(get_unique_file_name(file_path), format="mp3")
-
-
 
 # text_io.py
 
