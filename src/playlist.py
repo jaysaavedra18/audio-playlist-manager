@@ -18,7 +18,6 @@ from file_utils import (
 )
 from config import (
     LIBRARY_DATA_PATH,
-    ASSETS_DIRECTORY,
     ARCHIVES_DIRECTORY,
     DATE_STRING,
     PLAYLIST_DATA_PATH,
@@ -132,7 +131,7 @@ class Playlist:
 
         # Write to the necessary files for audio and promotions
         promotions_path = os.path.join(
-            ASSETS_DIRECTORY, f"{self.title}-promotions.txt")
+            ARCHIVES_DIRECTORY, f"{self.title}-promotions.txt")
         with open(promotions_path, "w") as file:
             for license in self.promotions:
                 file.write(license + "\n")
