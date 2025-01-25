@@ -4,7 +4,7 @@ from tkinter import filedialog, simpledialog
 
 from audio_file import AudioFile
 from config import LIBRARY_DATA_PATH, LIBRARY_DIRECTORY
-from utils import seconds_to_mmss
+from utils import seconds_to_mmss, hhmmss_to_seconds
 from file_utils import read_json, write_json, parse_text_block_into_song, get_audio_info
 from playlist import Playlist
 
@@ -194,13 +194,11 @@ class CreateByFrame(tk.Frame):
             time_str = simpledialog.askstring(
                 "Enter Max Duration", "Enter max duration (hh:mm:ss):")
             try:
-                hours, minutes, seconds = map(int, time_str.split(':'))
-                if hours >= 0 and minutes >= 0 and seconds >= 0:
-                    total_seconds = hours * 3600 + minutes * 60 + seconds
-                    return total_seconds
+                if '-' in time_str:
+                    print("Invalid time input. Please enter positive values for hours, minutes, and seconds.")
                 else:
-                    print(
-                        "Invalid time input. Please enter positive values for hours, minutes, and seconds.")
+                    total_seconds = hhmmss_to_seconds(time_str)
+                    return total_seconds
             except ValueError:
                 print("Invalid time format. Please use the format hh:mm:ss.")
 
