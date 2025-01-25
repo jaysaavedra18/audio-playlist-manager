@@ -65,8 +65,7 @@ class Playlist:
         for song in self.songs:
             print(song.duration)
 
-        total_duration_seconds = sum(mmss_to_seconds(
-            song.duration) for song in self.songs)
+        total_duration_seconds = sum(mmss_to_seconds(song.duration) for song in self.songs)
         self.total_duration = seconds_to_mmss(total_duration_seconds)
 
     def calculate_file_size(self):
