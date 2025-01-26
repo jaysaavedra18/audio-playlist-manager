@@ -5,7 +5,7 @@ import os
 
 from pydub import AudioSegment
 
-from audio_file import AudioFile
+from models.audio_file import AudioFile
 
 # Audio input/output functions
 
