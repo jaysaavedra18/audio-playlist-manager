@@ -75,7 +75,6 @@ class Playlist:
 
     # ideally i take out max_duration from arg3 to improve speed
     def create_playlist_by_criteria(self, criteria_function, max_duration):
-        # random.shuffle(audio_files)
         selected_songs = [song for song in audio_files if criteria_function(song)]
         random.shuffle(selected_songs)
 

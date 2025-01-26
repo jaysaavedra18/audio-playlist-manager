@@ -2,7 +2,6 @@
 """Provides functions for audio input/output operations (read, write, concat)."""
 import json
 import os
-import random
 
 from pydub import AudioSegment
 
@@ -28,13 +27,7 @@ def get_audio_info(audio_files: list) -> tuple:
 
 
 def concatenate_audio(selected_files: list, audio_directory: str) -> AudioSegment:
-    """
-    Concatenate multiple audio files specified in the 'selected_files' list into one AudioSegment.
-    
-    Notes:
-    - The 'selected_files' list should contain the names of the audio files (e.g., ["file1.mp3", "file2.wav"]).
-    - The concatenation order follows the order in the 'selected_files' list.
-    """
+    """Concatenate multiple audio files specified in the 'selected_files' list into one AudioSegment."""
     # Initialize an empty AudioSegment object to hold the concatenated audio
     concatenated_audio = AudioSegment.silent(duration=0)
 
@@ -54,57 +47,8 @@ def export_audio(audio: AudioSegment, file_path: str) -> None:
 
 # Text input/output functions
 
-def read_text_blocks(file_path):
-    """
-    Read text blocks from a file and split them based on double line breaks.
-
-    Args:
-        file_path (str): The path to the file containing text blocks.
-
-    Returns:
-        list: A list of text blocks.
-
-    Note:
-        This function assumes that the file contains text blocks separated by
-        two consecutive newline characters. If the file does not
-        follow this format, the function behavior may not be as expected.
-
-    """
-    with open(file_path, "r") as file:
-        text_blocks = file.read().split("\n\n")
-        return text_blocks
-    
-
-def write_first_lines_to_file(text_blocks, output_file):
-    """
-    Write the first line of each text block in the input list to a specified output file.
-
-    Parameters:
-    text_blocks (list): A list of text blocks, where each block is a string with one or more lines.
-    output_file (str): The path to the output file where the first lines will be written.
-
-    Notes:
-    - The output file is overwritten if it already exists; if it doesn't exist, it will be created.
-    """
-    with open(output_file, "w") as file:
-        for text_block in text_blocks:
-            lines = text_block.split("\n")
-            first_line = lines[0].strip()
-            if first_line:
-                file.write(first_line + "\n")
-
-
-def get_unique_file_name(file_path):
-    """
-    Generate a unique file name by adding a counter suffix to the base file name if the file already exists.
-
-    Parameters:
-    file_path (str): The original file path for which a unique name is needed.
-
-    Returns:
-    str: A unique file path based on the input 'file_path', ensuring that the file does not already exist
-    in the specified location.
-    """
+def get_unique_file_name(file_path: str) -> str:
+    """Generate a unique file name by adding a counter suffix to the base file name if the file already exists."""
     base_name, extension = os.path.splitext(file_path)
     unique_path = file_path
     counter = 1
@@ -116,12 +60,9 @@ def get_unique_file_name(file_path):
     return unique_path
 
 
-def parse_text_block_into_song(text):
+def parse_text_block_into_song(text: str) -> dict:
     """
     Parse a text block containing song information and extract relevant details.
-
-    Parameters:
-    text (str): A text block containing multiple lines of song information.
 
     Returns:
     dict: A dictionary containing the extracted song details, including song name, artist name,
@@ -156,14 +97,8 @@ def parse_text_block_into_song(text):
 
 # JSON/object input/output functions
 
-def write_json(objects, file_path):
-    """
-    Serialize a list of objects and write the JSON representation to a file.
-
-    Parameters:
-    objects (list): A list of objects to be serialized to JSON.
-    file_path (str): The file_path (including the file name) where the JSON data will be written.
-    """
+def write_json(objects: list, file_path: str) -> None:
+    """Serialize a list of objects and write the JSON representation to a file."""
     # Serialize to JSON
     json_data = [vars(obj) if not callable(
         getattr(obj, "to_dict", None)) else obj.to_dict() for obj in objects]
@@ -173,18 +108,8 @@ def write_json(objects, file_path):
         json.dump(json_data, json_file, indent=4)
 
 
-def read_json(file_path, target_class):
-    """
-    Read JSON data from a file and convert it into a list of objects of the specified class.
-
-    Parameters:
-    file_path (str): The path to the JSON file to be read.
-    target_class (class): The class to which the JSON data should be converted.
-
-    Returns:
-    list: A list of objects of the specified class, created from the JSON data in the file.
-    If the JSON file is empty or invalid, an empty list is returned.
-    """
+def read_json(file_path: str, target_class) -> list:
+    """Read JSON data from a file and convert it into a list of objects of the specified class."""
     try:
         with open(file_path, "r") as json_file:
             loaded_data = json.load(json_file)
@@ -200,37 +125,3 @@ def read_json(file_path, target_class):
         loaded_objects.append(target_class(**data))
 
     return loaded_objects
-
-
-
-
-# file_io.py
-
-# General file input/output functions
-
-def select_random_files(file_path, file_count):
-    """
-    Selects a specified number of random files from a directory.
-
-    Args:
-        file_path (str): Path to the directory containing the files.
-        file_count (int): The number of random files to select.
-
-    Returns:
-        list: A list of randomly selected file names.
-    """
-    files = [f for f in os.listdir(file_path) if f.endswith(
-        ".mp3") or f.endswith(".wav")]
-    return random.sample(files, file_count)
-
-
-def make_directory(directory):
-    """
-    Creates a directory if it does not already exist.
-
-    Args:
-        directory (str): The path of the directory to create.
-    """
-    if not os.path.exists(directory):
-        os.mkdir(directory)
-
