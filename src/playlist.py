@@ -3,22 +3,20 @@ import random
 from typing import List
 
 from audio_file import AudioFile
-from utils import (
-    mmss_to_seconds,
-    seconds_to_mmss,
-    bytes_to_formatted_size,
-    formatted_size_to_bytes,
-)
-from file_utils import (
-    concatenate_audio,
-    export_audio,
-    read_json,
-)
 from config import (
-    LIBRARY_DATA_PATH,
     DAILY_PLAYLIST_DIRECTORY,
     DATE_STRING,
+    LIBRARY_DATA_PATH,
     LIBRARY_DIRECTORY,
+)
+from utils import (
+    bytes_to_formatted_size,
+    concatenate_audio,
+    export_audio,
+    formatted_size_to_bytes,
+    mmss_to_seconds,
+    read_json,
+    seconds_to_mmss,
 )
 
 # Import data
@@ -114,9 +112,9 @@ class Playlist:
             for license in song.licenses:
                 if license not in self.promotions:
                     self.add_license(license)
-        
+
         # Add line break in the description
-        self.add_license('\n\n')
+        self.add_license("\n\n")
 
         # Create timestamps for songs
         total_duration = 0
