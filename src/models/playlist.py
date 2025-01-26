@@ -2,23 +2,23 @@ import os
 import random
 from typing import List
 
-from models.audio_file import AudioFile
 from config import (
     DAILY_PLAYLIST_DIRECTORY,
     DATE_STRING,
     LIBRARY_DATA_PATH,
     LIBRARY_DIRECTORY,
 )
+from file_utils import (
+    concatenate_audio,
+    export_audio,
+    read_json,
+)
+from models.audio_file import AudioFile
 from utils import (
     bytes_to_formatted_size,
     formatted_size_to_bytes,
     mmss_to_seconds,
     seconds_to_mmss,
-)
-from file_utils import (
-    export_audio,
-    concatenate_audio,
-    read_json,
 )
 
 # Import data
@@ -45,7 +45,7 @@ class Playlist:
         total_file_size_bytes = sum(formatted_size_to_bytes(song.file_size) for song in self.songs)
         self.total_file_size = bytes_to_formatted_size(total_file_size_bytes)
 
-        # Get filenames for the playlist 
+        # Get filenames for the playlist
         self.filenames = [song.filename for song in self.songs]
 
     def to_dict(self):
@@ -93,7 +93,7 @@ class Playlist:
         # Create daily archive directory if it doesn't exist
         if not os.path.exists(DAILY_PLAYLIST_DIRECTORY):
             os.mkdir(DAILY_PLAYLIST_DIRECTORY)
-        
+
         self.calculate_metrics()
         output_path = os.path.join(DAILY_PLAYLIST_DIRECTORY, f"{self.title}-{DATE_STRING}.mp3")
 

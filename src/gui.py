@@ -2,11 +2,11 @@ import os
 import tkinter as tk
 from tkinter import filedialog, simpledialog
 
+from config import LIBRARY_DATA_PATH, LIBRARY_DIRECTORY
+from file_utils import get_audio_info, parse_text_block_into_song, read_json, write_json
 from models.audio_file import AudioFile
 from models.playlist import Playlist
-from config import LIBRARY_DATA_PATH, LIBRARY_DIRECTORY
-from utils import seconds_to_mmss, hhmmss_to_seconds
-from file_utils import get_audio_info, parse_text_block_into_song, read_json, write_json
+from utils import hhmmss_to_seconds, seconds_to_mmss
 
 
 class CollectionViewer(tk.Toplevel):  # Use Toplevel for a separate window
@@ -96,13 +96,12 @@ class PlaylistCreatorFrame(tk.Frame):
             time_str = simpledialog.askstring(
                 "Enter Max Duration", "Enter max duration (mm:ss):")
             try:
-                minutes, seconds = map(int, time_str.split(':'))
+                minutes, seconds = map(int, time_str.split(":"))
                 if minutes >= 0 and seconds >= 0:
                     total_seconds = minutes * 60 + seconds
                     return total_seconds
-                else:
-                    print(
-                        "Invalid time input. Please enter positive values for minutes and seconds.")
+                print(
+                    "Invalid time input. Please enter positive values for minutes and seconds.")
             except ValueError:
                 print("Invalid time format. Please use the format mm:ss.")
 
@@ -118,7 +117,7 @@ class CreateByFrame(tk.Frame):
             ("Genre", "genre"),
             ("Mood", "mood"),
             ("Artist", "artist"),
-            ("Random", "random")
+            ("Random", "random"),
         ]
         # Create buttons for users' options
         for text, arg in options:
@@ -183,7 +182,7 @@ class CreateByFrame(tk.Frame):
             time_str = simpledialog.askstring(
                 "Enter Max Duration", "Enter max duration (hh:mm:ss):")
             try:
-                if '-' in time_str:
+                if "-" in time_str:
                     print("Invalid time input. Please enter positive values for hours, minutes, and seconds.")
                 else:
                     total_seconds = hhmmss_to_seconds(time_str)
@@ -233,7 +232,7 @@ class SongLibraryFrame(tk.Frame):
         data_text.pack()
 
         add_button = tk.Button(
-            add_songs_window, text="Add and Process", command=lambda: self.process_data(data_text.get("1.0", tk.END), 
+            add_songs_window, text="Add and Process", command=lambda: self.process_data(data_text.get("1.0", tk.END),
             selected_file_path, add_songs_window))
         add_button.pack()
 
@@ -244,7 +243,7 @@ class SongLibraryFrame(tk.Frame):
             index = len(audio_files)
             # Get audio file data
             song_name = parsed_data["song_name"]
-            filename = song_name + '.mp3'
+            filename = song_name + ".mp3"
             new_filepath = os.path.join(LIBRARY_DIRECTORY, filename)
             audio_info = get_audio_info([filepath])
             file_size = f"{audio_info[0] / (1024 * 1024):.2f} MB"
@@ -261,7 +260,7 @@ class SongLibraryFrame(tk.Frame):
                 file_size=file_size,
                 licenses=parsed_data["licenses"],
                 genre=[],
-                moods=[]
+                moods=[],
             )
             os.rename(filepath, new_filepath)
             audio_files.append(audio_file)
@@ -279,7 +278,7 @@ class EditTagsFrame(tk.Frame):
         # Define users' options
         options = [
             ("Genre", "genre"),
-            ("Mood", "moods")
+            ("Mood", "moods"),
         ]
         # Create buttons for users' options
         for text, arg in options:
