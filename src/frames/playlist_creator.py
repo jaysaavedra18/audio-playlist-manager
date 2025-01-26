@@ -3,8 +3,7 @@ import tkinter as tk
 from tkinter import filedialog, simpledialog
 
 from models.playlist import Playlist
-from frames.main_menu import MainMenuFrame
-from frames.create_by import CreateByFrame
+from navigator import navigate_to
 
 class PlaylistCreatorFrame(tk.Frame):
     def __init__(self, master):
@@ -16,10 +15,10 @@ class PlaylistCreatorFrame(tk.Frame):
         select_button = tk.Button(self, text="Browse Files", command=self.browse_files)
         select_button.pack()
 
-        create_by_button = tk.Button(self, text="Create By...", command=lambda: master.show_frame(CreateByFrame))
+        create_by_button = tk.Button(self, text="Create By...", command=lambda: navigate_to("create_by", master))
         create_by_button.pack()
 
-        back_button = tk.Button(self, text="Back to Main Menu", command=lambda: master.show_frame(MainMenuFrame))
+        back_button = tk.Button(self, text="Back to Main Menu", command=lambda: navigate_to("main_menu", master))
         back_button.pack()
 
     def browse_files(self):
