@@ -2,7 +2,7 @@ import os
 import tkinter as tk
 from tkinter import filedialog, simpledialog
 
-from song_library import SongLibraryFrame
+from navigator import navigate_to
 from config import LIBRARY_DATA_PATH
 from utils.files import read_json, write_json
 from models.audio_file import AudioFile
@@ -26,7 +26,7 @@ class EditTagsFrame(tk.Frame):
 
         # Create return to main menu button
         back_button = tk.Button(
-            self, text="Back to Song Library", command=lambda: master.show_frame(SongLibraryFrame))
+            self, text="Back to Song Library", command=lambda: navigate_to("song_library", master))
         back_button.pack()
 
     def update_tags(self, arg):
