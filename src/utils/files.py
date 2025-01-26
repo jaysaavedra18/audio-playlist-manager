@@ -63,19 +63,7 @@ def get_unique_file_name(file_path: str) -> str:
 
 
 def parse_text_block_into_song(text: str) -> dict:
-    """
-    Parse a text block containing song information and extract relevant details.
-
-    Returns:
-    dict: A dictionary containing the extracted song details, including song name, artist name,
-    artist link, and licenses.
-
-    Notes:
-    - The input 'text' parameter is expected to be a string with multiple lines, where the first line is
-      in the format "Song Name by Artist | Artist Link".
-    - The resulting dictionary includes the extracted details under the keys: "song_name", "artist_name",
-      "artist_link", and "licenses".
-    """
+    """Parse a text block containing song details, extract song name, artist name, artist link, and licenses into a dictionary."""
     lines = text.strip().split('\n')
 
     # Extract song name, artist name, and artist link from the first line
