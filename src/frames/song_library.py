@@ -3,8 +3,7 @@ import tkinter as tk
 from tkinter import filedialog
 
 from config import LIBRARY_DATA_PATH, LIBRARY_DIRECTORY
-from frames.edit_tags import EditTagsFrame
-from frames.main_menu import MainMenuFrame
+from navigator import navigate_to
 from models.audio_file import AudioFile
 from utils.converter import seconds_to_mmss
 from utils.files import get_audio_info, read_json, parse_text_block_into_song, write_json
@@ -42,10 +41,10 @@ class SongLibraryFrame(tk.Frame):
 
         # Frame 1st for selection of tag
         # Finder window
-        tags_button = tk.Button(self, text="Edit Tags", command=lambda: master.show_frame(EditTagsFrame))
+        tags_button = tk.Button(self, text="Edit Tags", command=lambda: navigate_to("edit_tags", master))
         tags_button.pack()
 
-        back_button = tk.Button(self, text="Back to Main Menu", command=lambda: master.show_frame(MainMenuFrame))
+        back_button = tk.Button(self, text="Back to Main Menu", command=lambda: navigate_to("main_menu", master))
         back_button.pack()
 
     def show_collection_viewer(self):
