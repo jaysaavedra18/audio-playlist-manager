@@ -25,7 +25,7 @@ def analyze_audio(audio_path: str) -> dict:
     onset_frames = librosa.onset.onset_detect(y=y, sr=sr)
     onset_times = librosa.frames_to_time(onset_frames, sr=sr)
     print(f"Detected {len(onset_times)} onsets")
-    return y, sr, tempo, average_loudness, mfccs, chroma, onset_times
+    return y, sr, tempo, rms, average_loudness, mfccs, chroma, onset_times
 
 def plot_waveform(y: np.ndarray, sr: int) -> None:
     """Plot the waveform of an audio signal."""
@@ -43,6 +43,15 @@ def plot_spectogram(y: np.ndarray, sr: int) -> None:
     librosa.display.specshow(librosa.power_to_db(S, ref=np.max), sr=sr, y_axis='mel', x_axis='time')
     plt.colorbar(format="%+2.0d dB")
     plt.title("Mel Spectogram")
+    plt.show()
+
+def plot_loudness(rms, sr: int) -> None:
+    """Plot the loudness of an audio signal over time."""
+    plt.figure(figsize=(12, 4))
+    librosa.display.waveshow(rms[0], sr=sr)
+    plt.title("Loudness (RMS) Over Time")
+    plt.xlabel("Time (s)")
+    plt.ylabel("RMS Energy")
     plt.show()
 
 
