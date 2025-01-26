@@ -1,4 +1,7 @@
 import librosa
+import librosa.display
+import matplotlib.pyplot as plt
+import numpy as np
 
 def analyze_audio(audio_path: str) -> dict:
     """Analyze an audio file and extract its properties."""
@@ -17,12 +20,18 @@ def analyze_audio(audio_path: str) -> dict:
     # Onset detection shows when musical events occur in the audio signal.
     onset_frames = librosa.onset.onset_detect(y=y, sr=sr)
     onset_times = librosa.frames_to_time(onset_frames, sr=sr)
-    print(f"Detected {len(onset_times)} onsets at times: {onset_times}")
+    print(f"Detected {len(onset_times)} onsets")
+    return y, sr, tempo, beats, mfccs, chroma, onset_frames, onset_times
+
+def plot_waveform(y: np.ndarray, sr: int) -> None:
+    """Plot the waveform of an audio signal."""
+    plt.figure(figsize=(12, 4))
+    librosa.display.waveshow(y, sr=sr)
+    plt.title("Waveform")
+    plt.xlabel("Time (s)")
+    plt.ylabel("Amplitude")
+    plt.show()
 
 
-
-
-
-
-
-analyze_audio("/Users/saavedj/Downloads/music/misc/16.mp3")
+audio_results = analyze_audio("/Users/saavedj/Downloads/music/misc/16.mp3")
+plot_waveform(audio_results[0], audio_results[1])
