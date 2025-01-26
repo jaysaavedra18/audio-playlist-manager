@@ -1,7 +1,6 @@
 import tkinter as tk
 from frames.main_menu import MainMenuFrame
 
-
 class Application(tk.Tk):
     def __init__(self):
         super().__init__()
