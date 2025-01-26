@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import filedialog, simpledialog
 
 from models.playlist import Playlist
-from navigator import navigate_to
+from .navigator import navigate_to
 
 class PlaylistCreatorFrame(tk.Frame):
     def __init__(self, master):

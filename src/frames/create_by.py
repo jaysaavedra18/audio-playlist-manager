@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import simpledialog
 from models.playlist import Playlist
 from utils.converter import hhmmss_to_seconds
-from navigator import navigate_to
+from .navigator import navigate_to
 
 # maybe updating input to select from the possible values
 class CreateByFrame(tk.Frame):

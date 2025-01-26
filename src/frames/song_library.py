@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import filedialog
 
 from config import LIBRARY_DATA_PATH, LIBRARY_DIRECTORY
-from navigator import navigate_to
+from .navigator import navigate_to
 from models.audio_file import AudioFile
 from utils.converter import seconds_to_mmss
 from utils.files import get_audio_info, read_json, parse_text_block_into_song, write_json

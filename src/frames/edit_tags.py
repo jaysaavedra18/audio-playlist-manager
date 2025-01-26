@@ -2,7 +2,7 @@ import os
 import tkinter as tk
 from tkinter import filedialog, simpledialog
 
-from navigator import navigate_to
+from .navigator import navigate_to
 from config import LIBRARY_DATA_PATH
 from utils.files import read_json, write_json
 from models.audio_file import AudioFile
