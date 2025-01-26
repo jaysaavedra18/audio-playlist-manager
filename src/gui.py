@@ -53,12 +53,8 @@ class MainMenuFrame(tk.Frame):
         playlist_button.pack()
 
         option2_button = tk.Button(
-            self, text="MP3 Downloader", command=lambda: master.show_frame(MP3DownloaderFrame))
-        option2_button.pack()
-
-        option3_button = tk.Button(
             self, text="Song Library", command=lambda: master.show_frame(SongLibraryFrame))
-        option3_button.pack()
+        option2_button.pack()
 
 
 class PlaylistCreatorFrame(tk.Frame):
@@ -201,11 +197,6 @@ class CreateByFrame(tk.Frame):
                     return total_seconds
             except ValueError:
                 print("Invalid time format. Please use the format hh:mm:ss.")
-
-
-class MP3DownloaderFrame(tk.Frame):
-    def __init__(self, master):
-        super().__init__(master)
 
 
 class SongLibraryFrame(tk.Frame):
