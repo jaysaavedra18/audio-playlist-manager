@@ -1,6 +1,6 @@
 # utils.py
 
-# Define utility functions for common operations
+# Utility functions for common conversion operations
 
 def seconds_to_hhmmss(seconds: int | float) -> str:
     """Convert a time duration in seconds to a formatted string representing the time in hours, minutes, and seconds."""
