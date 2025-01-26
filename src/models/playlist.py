@@ -109,15 +109,6 @@ class Playlist:
         concatenated_audio = concatenate_audio(self.filenames, LIBRARY_DIRECTORY)
         export_audio(concatenated_audio, output_path)
 
-        # Select necessary licenses and export to the daily playlist directory
-        for song in self.songs:
-            for license in song.licenses:
-                if license not in self.promotions:
-                    self.add_license(license)
-
-        # Add line break in the description
-        self.add_license("\n\n")
-
         # Create timestamps for songs
         total_duration = 0
         for song in self.songs:
@@ -125,6 +116,17 @@ class Playlist:
             total_duration += mmss_to_seconds(song.duration)
             self.add_license(timestamp)
             print(timestamp)
+        
+        # Add line break in the description
+        self.add_license("\n\n")
+        
+        # Select necessary licenses and export to the daily playlist directory
+        for song in self.songs:
+            for license in song.licenses:
+                if license not in self.promotions:
+                    self.add_license(license)
+
+
 
         # Write to the necessary files for audio and promotions
         promotions_path = os.path.join(
