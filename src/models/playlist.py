@@ -2,23 +2,23 @@ import os
 import random
 from typing import List
 
-from models.audio_file import AudioFile
 from config import (
     DAILY_PLAYLIST_DIRECTORY,
     DATE_STRING,
     LIBRARY_DATA_PATH,
     LIBRARY_DIRECTORY,
 )
+from file_utils import (
+    concatenate_audio,
+    export_audio,
+    read_json,
+)
+from models.audio_file import AudioFile
 from utils import (
     bytes_to_formatted_size,
     formatted_size_to_bytes,
     mmss_to_seconds,
     seconds_to_mmss,
-)
-from file_utils import (
-    export_audio,
-    concatenate_audio,
-    read_json,
 )
 
 # Import data
@@ -31,12 +31,22 @@ class Playlist:
         self.songs = songs or []
         self.promotions = promotions or []
         self.date_created = date_created or DATE_STRING
-        self.calculate_metrics()
+        self.filenames = []
+
+        if self.songs:
+            self.calculate_metrics()
 
     def calculate_metrics(self):
-        self.calculate_duration()
-        self.calculate_file_size()
-        self.get_filenames()
+        # Calculate total duration
+        total_duration_seconds = sum(mmss_to_seconds(song.duration) for song in self.songs)
+        self.total_duration = seconds_to_mmss(total_duration_seconds)
+
+        # Calculate total file size
+        total_file_size_bytes = sum(formatted_size_to_bytes(song.file_size) for song in self.songs)
+        self.total_file_size = bytes_to_formatted_size(total_file_size_bytes)
+
+        # Get filenames for the playlist
+        self.filenames = [song.filename for song in self.songs]
 
     def to_dict(self):
         return {
@@ -48,29 +58,9 @@ class Playlist:
 
     def add_song(self, song: AudioFile):
         self.songs.append(song)
-        self.calculate_metrics()
 
     def remove_song(self, song: AudioFile):
         self.songs.remove(song)
-        self.calculate_metrics()
-
-    def add_license(self, license_text: str):
-        self.promotions.append(license_text)
-
-    def calculate_duration(self):
-        for song in self.songs:
-            print(song.duration)
-
-        total_duration_seconds = sum(mmss_to_seconds(song.duration) for song in self.songs)
-        self.total_duration = seconds_to_mmss(total_duration_seconds)
-
-    def calculate_file_size(self):
-        total_file_size_bytes = sum(formatted_size_to_bytes(
-            song.file_size) for song in self.songs)
-        self.total_file_size = bytes_to_formatted_size(total_file_size_bytes)
-
-    def get_filenames(self):
-        self.filenames = [song.filename for song in self.songs]
 
     # ideally i take out max_duration from arg3 to improve speed
     def create_playlist_by_criteria(self, criteria_function, max_duration):
@@ -103,30 +93,31 @@ class Playlist:
         # Create daily archive directory if it doesn't exist
         if not os.path.exists(DAILY_PLAYLIST_DIRECTORY):
             os.mkdir(DAILY_PLAYLIST_DIRECTORY)
-        self.get_filenames()
+
+        self.calculate_metrics()
         output_path = os.path.join(DAILY_PLAYLIST_DIRECTORY, f"{self.title}-{DATE_STRING}.mp3")
+
         # Concatenate audio and export to the daily playlist directory
         concatenated_audio = concatenate_audio(self.filenames, LIBRARY_DIRECTORY)
         export_audio(concatenated_audio, output_path)
 
-        # Create timestamps for songs
+        # Combine timestamps, song information, and licenses in a single pass
         total_duration = 0
+        track_info = []
+        all_licenses = set()
+
         for song in self.songs:
+            # Generate timestamp for each song
             timestamp = f"{seconds_to_mmss(total_duration)} {song.song_name} by {song.artist} | {song.artist_link}"
+            track_info.append(timestamp)
+
+            # Add licenses to the set to avoid duplicates
+            all_licenses.update(song.licenses)
+
             total_duration += mmss_to_seconds(song.duration)
-            self.add_license(timestamp)
-            print(timestamp)
-        
-        # Add line break in the description
-        self.add_license("\n")
 
-        # Select necessary licenses and export to the daily playlist directory
-        for song in self.songs:
-            for license in song.licenses:
-                if license not in self.promotions:
-                    self.add_license(license)
-
-
+        # Update promotions with the track info and licenses
+        self.promotions = track_info + ["\n"] + list(all_licenses)
 
         # Write to the necessary files for audio and promotions
         promotions_path = os.path.join(
