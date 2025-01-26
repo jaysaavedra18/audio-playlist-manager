@@ -20,7 +20,5 @@ DOWNLOADS_DIRECTORY = os.path.join(AUDIO_DIRECTORY, "misc")
 LIBRARY_DIRECTORY = os.path.join(AUDIO_DIRECTORY, "lofi")
 
 # Define data file paths
-REFERENCES_PATH = os.path.join(DATA_DIRECTORY, "references.txt")
 LIBRARY_PATH = os.path.join(DATA_DIRECTORY, "library.txt")
 LIBRARY_DATA_PATH = os.path.join(DATA_DIRECTORY, "library_data.json")
-PLAYLIST_DATA_PATH = os.path.join(DATA_DIRECTORY, "playlist_data.json")

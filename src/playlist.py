@@ -14,13 +14,11 @@ from file_utils import (
     export_audio,
     make_directory,
     read_json,
-    write_json,
 )
 from config import (
     LIBRARY_DATA_PATH,
     DAILY_PLAYLIST_DIRECTORY,
     DATE_STRING,
-    PLAYLIST_DATA_PATH,
     LIBRARY_DIRECTORY,
 )
 
@@ -135,10 +133,5 @@ class Playlist:
         with open(promotions_path, "w") as file:
             for license in self.promotions:
                 file.write(license + "\n")
-
-        # Add new playlist file to data
-        playlist_files = read_json(PLAYLIST_DATA_PATH, Playlist)
-        playlist_files.append(self)
-        write_json(playlist_files, PLAYLIST_DATA_PATH)
 
         print("successfully exported your playlist :D ")
