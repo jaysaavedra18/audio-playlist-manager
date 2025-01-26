@@ -1,3 +1,7 @@
+import tkinter as tk
+from frames.playlist_creator import PlaylistCreatorFrame
+from frames.song_library import SongLibraryFrame
+
 class MainMenuFrame(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
