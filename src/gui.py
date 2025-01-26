@@ -64,16 +64,13 @@ class PlaylistCreatorFrame(tk.Frame):
         label = tk.Label(self, text="Create a Playlist")
         label.pack()
 
-        select_button = tk.Button(
-            self, text="Browse Files", command=self.browse_files)
+        select_button = tk.Button(self, text="Browse Files", command=self.browse_files)
         select_button.pack()
 
-        create_by_button = tk.Button(
-            self, text="Create By...", command=lambda: master.show_frame(CreateByFrame))
+        create_by_button = tk.Button(self, text="Create By...", command=lambda: master.show_frame(CreateByFrame))
         create_by_button.pack()
 
-        back_button = tk.Button(
-            self, text="Back to Main Menu", command=lambda: master.show_frame(MainMenuFrame))
+        back_button = tk.Button(self, text="Back to Main Menu", command=lambda: master.show_frame(MainMenuFrame))
         back_button.pack()
 
     def browse_files(self):
@@ -91,10 +88,7 @@ class PlaylistCreatorFrame(tk.Frame):
         max_duration = self.get_time_input()
 
         playlist = Playlist(title=title)
-        # print(filenames)
-        playlist.add_songs_by_filename(
-            filenames=filenames, max_duration=max_duration)
-        # print(playlist.songs)
+        playlist.add_songs_by_filename(filenames=filenames, max_duration=max_duration)
         playlist.export_playlist()
 
     def get_time_input(self):
@@ -128,8 +122,7 @@ class CreateByFrame(tk.Frame):
         ]
         # Create buttons for users' options
         for text, arg in options:
-            button = tk.Button(
-                self, text=text, command=lambda arg=arg: self.select_criteria(arg))
+            button = tk.Button(self, text=text, command=lambda arg=arg: self.select_criteria(arg))
             button.pack()
         # Create return to main menu button
         back_button = tk.Button(
@@ -217,12 +210,10 @@ class SongLibraryFrame(tk.Frame):
 
         # Frame 1st for selection of tag
         # Finder window
-        tags_button = tk.Button(
-            self, text="Edit Tags", command=lambda: master.show_frame(EditTagsFrame))
+        tags_button = tk.Button(self, text="Edit Tags", command=lambda: master.show_frame(EditTagsFrame))
         tags_button.pack()
 
-        back_button = tk.Button(
-            self, text="Back to Main Menu", command=lambda: master.show_frame(MainMenuFrame))
+        back_button = tk.Button(self, text="Back to Main Menu", command=lambda: master.show_frame(MainMenuFrame))
         back_button.pack()
 
     def show_collection_viewer(self):
@@ -243,7 +234,8 @@ class SongLibraryFrame(tk.Frame):
         data_text.pack()
 
         add_button = tk.Button(
-            add_songs_window, text="Add and Process", command=lambda: self.process_data(data_text.get("1.0", tk.END), selected_file_path, add_songs_window))
+            add_songs_window, text="Add and Process", command=lambda: self.process_data(data_text.get("1.0", tk.END), 
+            selected_file_path, add_songs_window))
         add_button.pack()
 
     def process_data(self, text, filepath, window_to_close):

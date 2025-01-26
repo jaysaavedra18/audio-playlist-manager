@@ -31,6 +31,8 @@ def concatenate_audio(selected_files: list, audio_directory: str) -> AudioSegmen
     # Initialize an empty AudioSegment object to hold the concatenated audio
     concatenated_audio = AudioSegment.silent(duration=0)
 
+    print("Building your playlist...")    
+
     for file in selected_files:
         audio_path = os.path.join(audio_directory, file)
         audio_segment = AudioSegment.from_file(audio_path)

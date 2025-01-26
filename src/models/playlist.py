@@ -31,12 +31,22 @@ class Playlist:
         self.songs = songs or []
         self.promotions = promotions or []
         self.date_created = date_created or DATE_STRING
-        self.calculate_metrics()
+        self.filenames = []
+
+        if self.songs:
+            self.calculate_metrics()
 
     def calculate_metrics(self):
-        self.calculate_duration()
-        self.calculate_file_size()
-        self.get_filenames()
+        # Calculate total duration
+        total_duration_seconds = sum(mmss_to_seconds(song.duration) for song in self.songs)
+        self.total_duration = seconds_to_mmss(total_duration_seconds)
+
+        # Calculate total file size
+        total_file_size_bytes = sum(formatted_size_to_bytes(song.file_size) for song in self.songs)
+        self.total_file_size = bytes_to_formatted_size(total_file_size_bytes)
+
+        # Get filenames for the playlist 
+        self.filenames = [song.filename for song in self.songs]
 
     def to_dict(self):
         return {
@@ -48,26 +58,9 @@ class Playlist:
 
     def add_song(self, song: AudioFile):
         self.songs.append(song)
-        self.calculate_metrics()
 
     def remove_song(self, song: AudioFile):
         self.songs.remove(song)
-        self.calculate_metrics()
-
-    def calculate_duration(self):
-        for song in self.songs:
-            print(song.duration)
-
-        total_duration_seconds = sum(mmss_to_seconds(song.duration) for song in self.songs)
-        self.total_duration = seconds_to_mmss(total_duration_seconds)
-
-    def calculate_file_size(self):
-        total_file_size_bytes = sum(formatted_size_to_bytes(
-            song.file_size) for song in self.songs)
-        self.total_file_size = bytes_to_formatted_size(total_file_size_bytes)
-
-    def get_filenames(self):
-        self.filenames = [song.filename for song in self.songs]
 
     # ideally i take out max_duration from arg3 to improve speed
     def create_playlist_by_criteria(self, criteria_function, max_duration):
@@ -101,7 +94,7 @@ class Playlist:
         if not os.path.exists(DAILY_PLAYLIST_DIRECTORY):
             os.mkdir(DAILY_PLAYLIST_DIRECTORY)
         
-        self.get_filenames()
+        self.calculate_metrics()
         output_path = os.path.join(DAILY_PLAYLIST_DIRECTORY, f"{self.title}-{DATE_STRING}.mp3")
 
         # Concatenate audio and export to the daily playlist directory
