@@ -17,6 +17,7 @@ def analyze_audio(audio_path: str) -> dict:
     # Onset detection shows when musical events occur in the audio signal.
     onset_frames = librosa.onset.onset_detect(y=y, sr=sr)
     onset_times = librosa.frames_to_time(onset_frames, sr=sr)
+    print(f"Detected {len(onset_times)} onsets at times: {onset_times}")
 
 
 
