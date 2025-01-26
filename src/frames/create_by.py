@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import simpledialog
 from models.playlist import Playlist
 from utils.converter import hhmmss_to_seconds
-from frames.playlist_creator import PlaylistCreatorFrame
+from navigator import navigate_to
 
 # maybe updating input to select from the possible values
 class CreateByFrame(tk.Frame):
@@ -24,7 +24,7 @@ class CreateByFrame(tk.Frame):
             button.pack()
         # Create return to main menu button
         back_button = tk.Button(
-            self, text="Back to Playlist Creator", command=lambda: master.show_frame(PlaylistCreatorFrame))
+            self, text="Back to Playlist Creator", command=lambda: navigate_to("playlist_creator", master))
         back_button.pack()
 
     def select_criteria(self, arg):
