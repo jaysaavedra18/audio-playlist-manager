@@ -118,8 +118,8 @@ class Playlist:
             print(timestamp)
         
         # Add line break in the description
-        self.add_license("\n\n")
-        
+        self.add_license("\n")
+
         # Select necessary licenses and export to the daily playlist directory
         for song in self.songs:
             for license in song.licenses:
