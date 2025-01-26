@@ -54,9 +54,6 @@ class Playlist:
         self.songs.remove(song)
         self.calculate_metrics()
 
-    def add_license(self, license_text: str):
-        self.promotions.append(license_text)
-
     def calculate_duration(self):
         for song in self.songs:
             print(song.duration)
@@ -120,18 +117,14 @@ class Playlist:
             # Generate timestamp for each song
             timestamp = f"{seconds_to_mmss(total_duration)} {song.song_name} by {song.artist} | {song.artist_link}"
             track_info.append(timestamp)
+
+            # Add licenses to the set to avoid duplicates
+            all_licenses.update(song.licenses)
+
             total_duration += mmss_to_seconds(song.duration)
-        
-        # Add line break in the description
-        self.add_license("\n")
 
-        # Select necessary licenses and export to the daily playlist directory
-        for song in self.songs:
-            for license in song.licenses:
-                if license not in self.promotions:
-                    self.add_license(license)
-
-
+        # Update promotions with the track info and licenses
+        self.promotions = track_info + ["\n"] + list(all_licenses)
 
         # Write to the necessary files for audio and promotions
         promotions_path = os.path.join(
