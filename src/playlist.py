@@ -12,7 +12,6 @@ from utils import (
 from file_utils import (
     concatenate_audio,
     export_audio,
-    make_directory,
     read_json,
 )
 from config import (
@@ -102,7 +101,8 @@ class Playlist:
 
     def export_playlist(self):
         # Create daily archive directory if it doesn't exist
-        make_directory(DAILY_PLAYLIST_DIRECTORY)
+        if not os.path.exists(DAILY_PLAYLIST_DIRECTORY):
+            os.mkdir(DAILY_PLAYLIST_DIRECTORY)
         self.get_filenames()
         output_path = os.path.join(DAILY_PLAYLIST_DIRECTORY, f"{self.title}-{DATE_STRING}.mp3")
         # Concatenate audio and export to the daily playlist directory
