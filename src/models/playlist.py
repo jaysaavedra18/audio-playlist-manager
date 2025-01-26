@@ -103,19 +103,24 @@ class Playlist:
         # Create daily archive directory if it doesn't exist
         if not os.path.exists(DAILY_PLAYLIST_DIRECTORY):
             os.mkdir(DAILY_PLAYLIST_DIRECTORY)
+        
         self.get_filenames()
         output_path = os.path.join(DAILY_PLAYLIST_DIRECTORY, f"{self.title}-{DATE_STRING}.mp3")
+
         # Concatenate audio and export to the daily playlist directory
         concatenated_audio = concatenate_audio(self.filenames, LIBRARY_DIRECTORY)
         export_audio(concatenated_audio, output_path)
 
-        # Create timestamps for songs
+        # Combine timestamps, song information, and licenses in a single pass
         total_duration = 0
+        track_info = []
+        all_licenses = set()
+
         for song in self.songs:
+            # Generate timestamp for each song
             timestamp = f"{seconds_to_mmss(total_duration)} {song.song_name} by {song.artist} | {song.artist_link}"
+            track_info.append(timestamp)
             total_duration += mmss_to_seconds(song.duration)
-            self.add_license(timestamp)
-            print(timestamp)
         
         # Add line break in the description
         self.add_license("\n")
