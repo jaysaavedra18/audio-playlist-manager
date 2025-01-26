@@ -2,9 +2,12 @@
 ###################
 yt_assets/
 audio/
-venv/
 data/
 __pycache__/
+
+# Environment #
+venv/
+.env
 
 # Compiled source #
 ###################

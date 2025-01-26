@@ -2,11 +2,11 @@ import os
 import tkinter as tk
 from tkinter import filedialog, simpledialog
 
-from audio_file import AudioFile
+from models.audio_file import AudioFile
+from models.playlist import Playlist
 from config import LIBRARY_DATA_PATH, LIBRARY_DIRECTORY
 from utils import seconds_to_mmss, hhmmss_to_seconds
-from file_utils import read_json, write_json, parse_text_block_into_song, get_audio_info
-from playlist import Playlist
+from file_utils import get_audio_info, parse_text_block_into_song, read_json, write_json
 
 
 class CollectionViewer(tk.Toplevel):  # Use Toplevel for a separate window

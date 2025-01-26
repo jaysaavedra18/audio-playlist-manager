@@ -2,26 +2,23 @@ import os
 import random
 from typing import List
 
-from audio_file import AudioFile
+from models.audio_file import AudioFile
+from config import (
+    DAILY_PLAYLIST_DIRECTORY,
+    DATE_STRING,
+    LIBRARY_DATA_PATH,
+    LIBRARY_DIRECTORY,
+)
 from utils import (
-    mmss_to_seconds,
-    seconds_to_mmss,
     bytes_to_formatted_size,
     formatted_size_to_bytes,
+    mmss_to_seconds,
+    seconds_to_mmss,
 )
 from file_utils import (
-    concatenate_audio,
     export_audio,
-    make_directory,
+    concatenate_audio,
     read_json,
-    write_json,
-)
-from config import (
-    LIBRARY_DATA_PATH,
-    ARCHIVES_DIRECTORY,
-    DATE_STRING,
-    PLAYLIST_DATA_PATH,
-    LIBRARY_DIRECTORY,
 )
 
 # Import data
@@ -77,7 +74,6 @@ class Playlist:
 
     # ideally i take out max_duration from arg3 to improve speed
     def create_playlist_by_criteria(self, criteria_function, max_duration):
-        # random.shuffle(audio_files)
         selected_songs = [song for song in audio_files if criteria_function(song)]
         random.shuffle(selected_songs)
 
@@ -105,21 +101,22 @@ class Playlist:
 
     def export_playlist(self):
         # Create daily archive directory if it doesn't exist
-        make_directory(ARCHIVES_DIRECTORY)
+        if not os.path.exists(DAILY_PLAYLIST_DIRECTORY):
+            os.mkdir(DAILY_PLAYLIST_DIRECTORY)
         self.get_filenames()
-        output_path = os.path.join(ARCHIVES_DIRECTORY, f"{self.title}-{DATE_STRING}.mp3")
-        # Concatenate audio and export to ASSETS_DIRECTORY
+        output_path = os.path.join(DAILY_PLAYLIST_DIRECTORY, f"{self.title}-{DATE_STRING}.mp3")
+        # Concatenate audio and export to the daily playlist directory
         concatenated_audio = concatenate_audio(self.filenames, LIBRARY_DIRECTORY)
         export_audio(concatenated_audio, output_path)
 
-        # Select necessary licenses and export to ASSETS_DIRECTORY
+        # Select necessary licenses and export to the daily playlist directory
         for song in self.songs:
             for license in song.licenses:
                 if license not in self.promotions:
                     self.add_license(license)
-        
+
         # Add line break in the description
-        self.add_license('\n\n')
+        self.add_license("\n\n")
 
         # Create timestamps for songs
         total_duration = 0
@@ -131,14 +128,9 @@ class Playlist:
 
         # Write to the necessary files for audio and promotions
         promotions_path = os.path.join(
-            ARCHIVES_DIRECTORY, f"{self.title}-promotions.txt")
+            DAILY_PLAYLIST_DIRECTORY, f"{self.title}-promotions.txt")
         with open(promotions_path, "w") as file:
             for license in self.promotions:
                 file.write(license + "\n")
-
-        # Add new playlist file to data
-        playlist_files = read_json(PLAYLIST_DATA_PATH, Playlist)
-        playlist_files.append(self)
-        write_json(playlist_files, PLAYLIST_DATA_PATH)
 
         print("successfully exported your playlist :D ")
