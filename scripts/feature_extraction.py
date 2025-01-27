@@ -33,6 +33,16 @@ def analyze_audio(audio_path: str) -> np.ndarray:
     )
 
 
+def analyze_onset_intervals(y: np.ndarray, sr: int) -> tuple:
+    """Analyze the intervals between musical onsets in an audio signal."""
+    onset_frames = librosa.onset.onset_detect(y=y, sr=sr)
+    onset_times = librosa.frames_to_time(onset_frames, sr=sr)
+    intervals = np.diff(onset_times)
+    avg_interval = np.mean(intervals) if len(intervals) > 0 else 0
+    std_interval = np.std(intervals) if len(intervals) > 0 else 0
+    return avg_interval, std_interval
+
+
 def print_features(features: np.ndarray) -> None:
     """Print the extracted features of an audio file."""
     # MFCCs (13 values)
@@ -49,16 +59,6 @@ def print_features(features: np.ndarray) -> None:
     print(f"Average Loudness (RMS): {features[-3]:.2f}")
     print(f"Average Onset Interval: {features[-2]:.2f} seconds")
     print(f"Standard Deviation of Onset Intervals: {features[-1]:.2f} seconds\n")
-
-
-def analyze_onset_intervals(y: np.ndarray, sr: int) -> tuple:
-    """Analyze the intervals between musical onsets in an audio signal."""
-    onset_frames = librosa.onset.onset_detect(y=y, sr=sr)
-    onset_times = librosa.frames_to_time(onset_frames, sr=sr)
-    intervals = np.diff(onset_times)
-    avg_interval = np.mean(intervals) if len(intervals) > 0 else 0
-    std_interval = np.std(intervals) if len(intervals) > 0 else 0
-    return avg_interval, std_interval
 
 
 features = analyze_audio("/Users/saavedj/Downloads/music/misc/16.mp3")
