@@ -7,33 +7,44 @@ def analyze_audio(audio_path: str) -> np.ndarray:
     """Analyze an audio file and extract its properties."""
     # Load an audio file
     y, sr = librosa.load(audio_path, sr=None)
-    print(f"Loaded audio with shape: {y.shape}, sample rate: {sr} Hz")
-
     # Extract tempo and bpm
     tempo, beats = librosa.beat.beat_track(y=y, sr=sr)
-    print(f"Estimated tempo: {tempo} BPM")
-
     # RMS energy is a measure of the audio signal's strength, calculate the avg loudness.
     loudness = librosa.feature.rms(y=y).mean()
-    print(f"Average loudness: {loudness}")
-
     # MFCCs capture the song's timbre and spectral texture, summarizing its tonal qualities over time.
     mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
-    print(f"MFCCs shape: {mfccs.shape}")
-
     # Chroma features capture the harmonic content of the audio signal.
     chroma = librosa.feature.chroma_stft(y=y, sr=sr)
-    print(f"Chroma features shape: {chroma.shape}")
+    # Onset detection shows when musical events occur in the audio signal.
+    avg_interval, std_interval = analyze_onset_intervals(y, sr)
 
+    # Build a feature vector by flattening the analysis results
+    features = np.concatenate([
+        np.mean(mfccs, axis=1),
+        np.mean(chroma, axis=1),
+        tempo,
+        [loudness],
+        [avg_interval, std_interval],
+    ])
+
+    return features
+
+def print_features(features: np.ndarray) -> None:
+    """Print the extracted features of an audio file."""
+    print(f"Estimated tempo: {features[-4]} BPM")
+    print(f"Average loudness: {features[-3]}")
+    print(f"Average onset interval: {features[-2]:.2f} s")
+    print(f"Standard deviation of onset intervals: {features[-1]:.2f} s")
+
+def analyze_onset_intervals(y: np.ndarray, sr: int):
     # Onset detection shows when musical events occur in the audio signal.
     onset_frames = librosa.onset.onset_detect(y=y, sr=sr)
     onset_times = librosa.frames_to_time(onset_frames, sr=sr)
     intervals = np.diff(onset_times)
-    avg_intervals = np.mean(intervals) if len(intervals) > 0 else 0
-    std_intervals = np.std(intervals) if len(intervals) > 0 else 0
-    print(f"Detected {len(onset_times)} onsets")
+    avg_interval = np.mean(intervals) if len(intervals) > 0 else 0
+    std_interval = np.std(intervals) if len(intervals) > 0 else 0
+    return avg_interval, std_interval
 
-    return y, sr, tempo, loudness, mfccs, chroma, onset_times
 
 def plot_waveform(y: np.ndarray, sr: int) -> None:
     """Plot the waveform of an audio signal."""
@@ -63,4 +74,5 @@ def plot_loudness(rms, sr: int) -> None:
     plt.show()
 
 
-audio_results = analyze_audio("/Users/saavedj/Downloads/music/misc/16.mp3")
+features = analyze_audio("/Users/saavedj/Downloads/music/misc/16.mp3")
+print_features(features)
