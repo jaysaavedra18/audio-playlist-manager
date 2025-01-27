@@ -2,8 +2,8 @@
 from gui import Application
 
 
-def main():
-    # Create an instance of your Application class
+def main() -> None:
+    """Run the main function of the program."""
     app = Application()
 
     # Start the main loop of the GUI framework

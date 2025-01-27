@@ -3,6 +3,7 @@ import librosa.display
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 def analyze_audio(audio_path: str) -> np.ndarray:
     """Analyze an audio file and extract its properties."""
     # Load an audio file
@@ -18,16 +19,20 @@ def analyze_audio(audio_path: str) -> np.ndarray:
     # Onset detection shows when musical events occur in the audio signal.
     avg_interval, std_interval = analyze_onset_intervals(y, sr)
 
-    # Build a feature vector by flattening the analysis results
-    features = np.concatenate([
-        np.mean(mfccs, axis=1),
-        np.mean(chroma, axis=1),
-        tempo,
-        [loudness],
-        [avg_interval, std_interval],
-    ])
+    # Return a feature vector by flattening the analysis results
+    return np.concatenate(
+        [
+            np.mean(mfccs, axis=1),  # Spectral properties and timbre of the song
+            np.mean(
+                chroma,
+                axis=1,
+            ),  # Harmonic content, indicates musical key, of the song
+            tempo,  # Speed or rhythm of the song, BPM
+            [loudness],  # Average loudness of the song
+            [avg_interval, std_interval],  # Average gap between musical events
+        ],
+    )
 
-    return features
 
 def print_features(features: np.ndarray) -> None:
     """Print the extracted features of an audio file."""
@@ -36,8 +41,9 @@ def print_features(features: np.ndarray) -> None:
     print(f"Average onset interval: {features[-2]:.2f} s")
     print(f"Standard deviation of onset intervals: {features[-1]:.2f} s")
 
-def analyze_onset_intervals(y: np.ndarray, sr: int):
-    # Onset detection shows when musical events occur in the audio signal.
+
+def analyze_onset_intervals(y: np.ndarray, sr: int) -> tuple:
+    """Analyze the intervals between musical onsets in an audio signal."""
     onset_frames = librosa.onset.onset_detect(y=y, sr=sr)
     onset_times = librosa.frames_to_time(onset_frames, sr=sr)
     intervals = np.diff(onset_times)
@@ -55,16 +61,23 @@ def plot_waveform(y: np.ndarray, sr: int) -> None:
     plt.ylabel("Amplitude")
     plt.show()
 
+
 def plot_spectogram(y: np.ndarray, sr: int) -> None:
     """Plot the spectrogram of an audio signal."""
     S = librosa.feature.melspectrogram(y=y, sr=sr)
     plt.figure(figsize=(12, 4))
-    librosa.display.specshow(librosa.power_to_db(S, ref=np.max), sr=sr, y_axis='mel', x_axis='time')
+    librosa.display.specshow(
+        librosa.power_to_db(S, ref=np.max),
+        sr=sr,
+        y_axis="mel",
+        x_axis="time",
+    )
     plt.colorbar(format="%+2.0d dB")
     plt.title("Mel Spectogram")
     plt.show()
 
-def plot_loudness(rms, sr: int) -> None:
+
+def plot_loudness(rms: np.ndarray, sr: int) -> None:
     """Plot the loudness of an audio signal over time."""
     plt.figure(figsize=(12, 4))
     librosa.display.waveshow(rms[0], sr=sr)
