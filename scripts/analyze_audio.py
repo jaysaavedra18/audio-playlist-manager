@@ -14,9 +14,8 @@ def analyze_audio(audio_path: str) -> np.ndarray:
     print(f"Estimated tempo: {tempo} BPM")
 
     # RMS energy is a measure of the audio signal's strength, calculate the avg loudness.
-    rms = librosa.feature.rms(y=y)
-    average_loudness = np.mean(rms)
-    print(f"Average loudness: {average_loudness}")
+    loudness = librosa.feature.rms(y=y).mean()
+    print(f"Average loudness: {loudness}")
 
     # MFCCs capture the song's timbre and spectral texture, summarizing its tonal qualities over time.
     mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
@@ -29,9 +28,12 @@ def analyze_audio(audio_path: str) -> np.ndarray:
     # Onset detection shows when musical events occur in the audio signal.
     onset_frames = librosa.onset.onset_detect(y=y, sr=sr)
     onset_times = librosa.frames_to_time(onset_frames, sr=sr)
+    intervals = np.diff(onset_times)
+    avg_intervals = np.mean(intervals) if len(intervals) > 0 else 0
+    std_intervals = np.std(intervals) if len(intervals) > 0 else 0
     print(f"Detected {len(onset_times)} onsets")
-    
-    return y, sr, tempo, rms, average_loudness, mfccs, chroma, onset_times
+
+    return y, sr, tempo, loudness, mfccs, chroma, onset_times
 
 def plot_waveform(y: np.ndarray, sr: int) -> None:
     """Plot the waveform of an audio signal."""
