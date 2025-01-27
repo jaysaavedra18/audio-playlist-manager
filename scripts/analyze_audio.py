@@ -36,10 +36,20 @@ def analyze_audio(audio_path: str) -> np.ndarray:
 
 def print_features(features: np.ndarray) -> None:
     """Print the extracted features of an audio file."""
-    print(f"Estimated tempo: {features[-4]} BPM")
-    print(f"Average loudness: {features[-3]}")
-    print(f"Average onset interval: {features[-2]:.2f} s")
-    print(f"Standard deviation of onset intervals: {features[-1]:.2f} s")
+    # MFCCs (13 values)
+    print("\nMFCCs (Mean):")
+    for i, mfcc in enumerate(features[:13]):
+        print(f"MFCC {i + 1}: {mfcc:.2f}")
+
+    # Chroma Features (12 values)
+    print("\nChroma Features (Mean):")
+    for i, chroma in enumerate(features[13:25]):
+        print(f"Chroma {i + 1}: {chroma:.2f}")
+
+    print(f"\nEstimated Tempo: {features[-4]:.2f} BPM")
+    print(f"Average Loudness (RMS): {features[-3]:.2f}")
+    print(f"Average Onset Interval: {features[-2]:.2f} seconds")
+    print(f"Standard Deviation of Onset Intervals: {features[-1]:.2f} seconds\n")
 
 
 def analyze_onset_intervals(y: np.ndarray, sr: int) -> tuple:
