@@ -9,23 +9,18 @@ def analyze_audio(audio_path: str) -> np.ndarray:
     """Analyze an audio file and extract its properties."""
     # Load an audio file
     y, sr = librosa.load(audio_path, sr=None)
-    print("Extracted Features:")
 
     # Extract tempo and bpm
     tempo, beats = librosa.beat.beat_track(y=y, sr=sr)
-    print(f"Tempo: {tempo}\n")
 
     # RMS energy is a measure of the audio signal's strength, calculate the avg loudness.
     loudness = librosa.feature.rms(y=y).mean()
-    print(f"Loudness: {[loudness]}\n")
 
     # Onset detection shows when musical events occur in the audio signal.
     avg_interval, std_interval = analyze_onset_intervals(y, sr)
-    print(f"Onset Intervals (Avg, Std): {[avg_interval, std_interval]}\n")
 
     # Zero crossing rate is the rate of sign changes along a signal.
     zcr = librosa.feature.zero_crossing_rate(y=y).mean()
-    print(f"Zero Crossing Rate: {[np.mean(zcr)]}\n")
 
     # Spectral features capture the frequency content of the audio signal.
     (
@@ -35,34 +30,22 @@ def analyze_audio(audio_path: str) -> np.ndarray:
         spectral_bandwidth,
         spectral_centroid,
     ) = analyze_spectral_features(y=y, sr=sr)
-    print(f"Spectral Centroid: {[np.mean(spectral_centroid)]}\n")
-    print(f"Spectral Bandwidth: {[np.mean(spectral_bandwidth)]}\n")
-    print(f"Spectral Rolloff: {[np.mean(spectral_rolloff)]}\n")
-    print(f"Spectral Flatness: {[np.mean(spectral_flatness)]}\n")
-    print(f"Spectral Contrast: {np.mean(spectral_contrast, axis=1)}\n")
 
     # MFCCs capture the song's timbre and spectral texture, summarizing its tonal qualities over time.
     mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
-    print(f"MFCCs: {np.mean(mfccs, axis=1)}\n")
 
     # Chroma features capture the harmonic content of a song, indicating its musical key.
     chroma, chroma_cens, chroma_cqt, chroma_stft = analyze_chroma_features(y, sr)
-    print(f"Chroma: {np.mean(chroma, axis=1)}\n")
-    print(f"Chroma CENS: {np.mean(chroma_cens, axis=1)}\n")
-    print(f"Chroma CQT: {np.mean(chroma_cqt, axis=1)}\n")
-    print(f"Chroma STFT: {np.mean(chroma_stft, axis=1)}\n")
 
     # Harmonic-to-Noise Ratio (HNR) measures the ratio of harmonic content to noise. (Music vs. Speech)
     harmonics = librosa.effects.harmonic(y=y)
     hnr = np.mean(harmonics) / np.mean(y)
-    print(f"HNR: {[hnr]}\n")
 
     # Tonnetz features capture tonal content in music.
     tonnetz = librosa.feature.tonnetz(y=y, sr=sr)
-    print(f"Tonnetz: {np.mean(tonnetz, axis=1)}\n")
 
-    # Return a feature vector by flattening the analysis results
-    return np.concatenate(
+    # Build the feature vector by flattening the analysis results
+    features = np.concatenate(
         [
             tempo,  # BPM (1) (0)
             [loudness],  # Avg loudness (1) (1)
@@ -82,6 +65,12 @@ def analyze_audio(audio_path: str) -> np.ndarray:
             np.mean(tonnetz, axis=1),  # Tonnetz (6) (15)
         ],
     )
+
+    # Print the extracted features if debug mode is enabled
+    if debug:
+        print_features(features)
+
+    return features
 
 
 def analyze_onset_intervals(y: np.ndarray, sr: int) -> tuple:
@@ -130,7 +119,7 @@ def analyze_spectral_features(y: np.ndarray, sr: int) -> tuple:
 
 def print_features(features: np.array) -> None:
     """Print extracted audio features in a clean format."""
-    print("Extracted Features:")
+    print("Extracted Features:\n")
 
     # Print each feature, extracting values from arrays where necessary
     print(f"Tempo: {features[0]}\n")
@@ -142,14 +131,14 @@ def print_features(features: np.array) -> None:
     print(f"Spectral Rolloff: {features[7]}\n")
     print(f"Spectral Flatness: {features[8]}\n")
     print(f"Spectral Contrast: {features[9:16]}\n")
-    print(f"MFCCs: {features[16:30]}\n")
-    print(f"Chroma: {features[30:43]}\n")
-    print(f"Chroma CENS: {features[43:56]}\n")
-    print(f"Chroma CQT: {features[56:69]}\n")
-    print(f"Chroma STFT: {features[69:82]}\n")
-    print(f"HNR: {features[82]}\n")
-    print(f"Tonnetz: {features[83:]}\n")
+    print(f"MFCCs: {features[16:29]}\n")
+    print(f"Chroma: {features[29:41]}\n")
+    print(f"Chroma CENS: {features[41:53]}\n")
+    print(f"Chroma CQT: {features[53:65]}\n")
+    print(f"Chroma STFT: {features[65:77]}\n")
+    print(f"HNR: {features[77]}\n")
+    print(f"Tonnetz: {features[78:]}\n")
 
 
-features = analyze_audio("/Users/saavedj/Downloads/music/misc/16.mp3")
-print_features(features)
+debug = True
+features = analyze_audio("/Users/saavedj/Downloads/music/misc/20 Min.mp3")
