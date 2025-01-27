@@ -17,3 +17,10 @@ Test 3: 62.42%
 - Medium Dataset
 - SVM Model
 - Features included: mfcc, chroma_cens, tonnetz, spectral_contrast, spectral_centroid, spectral_bandwidth, spectral_rolloff, rmse, zcr
+
+Test 4: 62.42%
+
+- Same Dataset
+- Same Model
+- Same Features
+- Feature Selection Technique: PCA (Principal Component Analysis)
