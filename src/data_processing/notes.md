@@ -67,3 +67,8 @@ Test 12: 54.49%
 - Neural Network Model
 - Same Features
 - Feature Selection: PCA and Lasso
+
+Test 13: 62.88%
+
+- SVM Model
+- Features included: mfcc, chroma_cens, "chroma_cqt", "chroma_stft", tonnetz, spectral_contrast, spectral_centroid, spectral_bandwidth, spectral_rolloff, rmse, zcr

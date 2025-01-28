@@ -11,6 +11,22 @@ from sklearn.svm import SVC
 from xgboost import XGBClassifier
 
 
+# Define a list of feature columns
+feature_columns = [
+    "mfcc",
+    "chroma_cens",
+    "chroma_cqt",
+    "chroma_stft",
+    "tonnetz",
+    "spectral_contrast",
+    "spectral_centroid",
+    "spectral_bandwidth",
+    "spectral_rolloff",
+    "rmse",
+    "zcr",
+]
+
+
 # Define a function for preprocessing data
 def preprocess_data(X_train, X_test, y_train, y_test, reduce_features=False):
     # Shuffle training data
