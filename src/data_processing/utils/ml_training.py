@@ -13,6 +13,7 @@ from xgboost import XGBClassifier
 
 # Define a list of feature columns
 feature_columns = [
+    # Librosa features
     "mfcc",
     "chroma_cens",
     "chroma_cqt",
@@ -24,6 +25,15 @@ feature_columns = [
     "spectral_rolloff",
     "rmse",
     "zcr",
+    # EchoNest features
+    # "acousticness",
+    # "danceability",
+    # "energy",
+    # "instrumentalness",
+    # "liveness",
+    # "speechiness",
+    # "tempo",
+    # "valence",
 ]
 
 
