@@ -26,14 +26,6 @@ feature_columns = [
     "rmse",
     "zcr",
     # EchoNest features
-    # "acousticness",
-    # "danceability",
-    # "energy",
-    # "instrumentalness",
-    # "liveness",
-    # "speechiness",
-    # "tempo",
-    # "valence",
 ]
 
 
