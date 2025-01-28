@@ -40,3 +40,17 @@ Test 6: 62.38%
 - Same Features
 - Feature Selection Technique: PCA and Lasso
 - Selected 240 features from 243
+
+Test 7: 58.80%
+
+- Same Dataset
+- Random Forest Model
+- Same Features
+- Feature Selectionm Technique: None
+
+Test 8:
+
+- Same Dataset
+- Random Forest Model
+- Same Features
+- Feature Selectionm Technique: PCA and Lasso
