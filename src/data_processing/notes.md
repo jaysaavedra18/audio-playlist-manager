@@ -72,3 +72,18 @@ Test 13: 62.88%
 
 - SVM Model
 - Features included: mfcc, chroma_cens, "chroma_cqt", "chroma_stft", tonnetz, spectral_contrast, spectral_centroid, spectral_bandwidth, spectral_rolloff, rmse, zcr
+
+Test 14: 62.96%
+
+- SVM Model
+- Features includes: Test 13 feats + echonest audio&temporal features
+
+Test 15: 63.58%
+
+- SVM Model
+- Features includes: Test 13 feats + echonest audio features
+
+Test 16: 52.47
+
+- KNN Model
+- Features: Test 15 features

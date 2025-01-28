@@ -1,6 +1,8 @@
 # ruff: noqa
 
 import numpy as np
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
 from sklearn.utils import shuffle
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.decomposition import PCA
@@ -79,6 +81,8 @@ def get_classifier(model_classifier="SVM"):
         )
     elif model_classifier == "SVM":
         return SVC()
+    elif model_classifier == "KNN":
+        return KNeighborsClassifier(n_neighbors=5)
     else:
         raise ValueError(
             "Invalid model_classifier. Choose from 'RF', 'GPM', 'NN', 'SVM'."
@@ -91,6 +95,9 @@ def train_and_evaluate(
 ):
     clf = get_classifier(model_classifier)
     clf.fit(X_train, y_train_encoded)
-    score = clf.score(X_test, y_test_encoded)
+    if model_classifier == "KNN":
+        score = accuracy_score(y_test_encoded, clf.predict(X_test))
+    else:
+        score = clf.score(X_test, y_test_encoded)
     print(f"Accuracy: {score:.2%}")
     return clf, score
