@@ -18,9 +18,25 @@ Test 3: 62.42%
 - SVM Model
 - Features included: mfcc, chroma_cens, tonnetz, spectral_contrast, spectral_centroid, spectral_bandwidth, spectral_rolloff, rmse, zcr
 
-Test 4: 62.42%
+Test 4: 62.30%
 
 - Same Dataset
 - Same Model
 - Same Features
 - Feature Selection Technique: PCA (Principal Component Analysis)
+
+Test 5: 61.80%
+
+- Same Dataset
+- Same Model
+- Same Features
+- Feature Selection Technique: PCA and Lasso
+- Selected 146 features from 162
+
+Test 6: 62.38%
+
+- Same Dataset
+- Same Model
+- Same Features
+- Feature Selection Technique: PCA and Lasso
+- Selected 240 features from 243
