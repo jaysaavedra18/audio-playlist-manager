@@ -20,37 +20,50 @@ Test 3: 62.42%
 
 Test 4: 62.30%
 
-- Same Dataset
 - Same Model
 - Same Features
-- Feature Selection Technique: PCA (Principal Component Analysis)
+- Feature Selection: PCA (Principal Component Analysis)
 
 Test 5: 61.80%
 
-- Same Dataset
 - Same Model
 - Same Features
-- Feature Selection Technique: PCA and Lasso
+- Feature Selection: PCA and Lasso
 - Selected 146 features from 162
 
 Test 6: 62.38%
 
-- Same Dataset
 - Same Model
 - Same Features
-- Feature Selection Technique: PCA and Lasso
+- Feature Selection: PCA and Lasso
 - Selected 240 features from 243
 
 Test 7: 58.80%
 
-- Same Dataset
 - Random Forest Model
 - Same Features
-- Feature Selectionm Technique: None
+- Feature Selection: None
 
-Test 8:
+Test 8: 51.73%
 
-- Same Dataset
 - Random Forest Model
 - Same Features
-- Feature Selectionm Technique: PCA and Lasso
+- Feature Selection: PCA and Lasso
+
+Test 9, 10: 62.18%, 62.38%
+
+- Gradient Boosting Machine Model
+- Same Features
+- Feature Selection: None
+
+Test 11: 55.97%
+
+- Neural Network Model
+- Same Features
+- Feature Selection: None
+
+Test 12: 54.49%
+
+- Neural Network Model
+- Same Features
+- Feature Selection: PCA and Lasso
