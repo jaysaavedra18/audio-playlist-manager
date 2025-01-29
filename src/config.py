@@ -16,7 +16,7 @@ DATE_STRING = today_date.strftime("%Y-%m-%d")
 # Define directory paths
 BASE_DIRECTORY = Path(__file__).resolve().parent.parent
 AUDIO_DIRECTORY = os.getenv("AUDIO_DIRECTORY")  # Set environment variable in .env file
-DATA_DIRECTORY = Path(BASE_DIRECTORY) / "data"
+DATA_DIRECTORY = Path(BASE_DIRECTORY) / "src" / "data"
 DAILY_PLAYLIST_DIRECTORY = Path(AUDIO_DIRECTORY) / "output" / f"{DATE_STRING}"
 DOWNLOADS_DIRECTORY = Path(AUDIO_DIRECTORY) / "misc"
 LIBRARY_DIRECTORY = Path(AUDIO_DIRECTORY) / "lofi"
