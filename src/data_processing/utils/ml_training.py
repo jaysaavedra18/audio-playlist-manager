@@ -69,7 +69,7 @@ def prepare_dataset_splits(tracks, features, subset: str) -> tuple:
     X_test = X_test.reshape(X_test.shape[0], -1)
     X_val = X_val.reshape(X_val.shape[0], -1)
 
-    return X_train, X_val, X_test, y_train, y_val, y_test
+    return X_train, X_test, X_val, y_train, y_test, y_val
 
 
 # Define a function for preprocessing data
