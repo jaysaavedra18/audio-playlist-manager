@@ -1,8 +1,6 @@
-# ruff: noqa
-
-from utils.files import read_json, write_json
 from config import LIBRARY_DATA_PATH
 from models.audio_file import AudioFile
+from utils.files import read_json, write_json
 
 
 class DataStore:
