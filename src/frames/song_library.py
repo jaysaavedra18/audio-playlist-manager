@@ -135,6 +135,6 @@ class SongLibraryFrame(tk.Frame):
             )
             Path.rename(filepath, new_filepath)
             audio_files.append(audio_file)
-            write_json(audio_files, LIBRARY_DATA_PATH)
+            write_json(LIBRARY_DATA_PATH, audio_files)
             print("Song added successfully!")
             window_to_close.destroy()

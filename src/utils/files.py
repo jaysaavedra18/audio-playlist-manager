@@ -92,10 +92,8 @@ def parse_text_block_into_song(text: str) -> dict:
 # JSON/object input/output functions
 
 
-def write_json(objects: list, file_path: str) -> None:
+def write_json(file_path: str, objects: list) -> None:
     """Serialize a list of objects and write the JSON representation to a file."""
-    file_path = str(file_path)
-
     # Serialize to JSON
     json_data = [
         vars(obj) if not callable(getattr(obj, "to_dict", None)) else obj.to_dict()
