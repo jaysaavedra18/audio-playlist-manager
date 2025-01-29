@@ -140,7 +140,7 @@ class Playlist:
             total_duration += mmss_to_seconds(song.duration)
 
         # Update promotions with the track info and licenses
-        self.promotions = [*track_info, ["\n"], *list(all_licenses)]
+        self.promotions = [*track_info, "\n", *list(all_licenses)]
 
         # Write to the necessary files for audio and promotions
         promotions_path = (
