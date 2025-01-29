@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import os
 import random
-from typing import Optional
+from pathlib import Path
+from typing import Callable
 
 from config import (
     DAILY_PLAYLIST_DIRECTORY,
@@ -33,9 +33,9 @@ class Playlist:
     def __init__(
         self,
         title: str,
-        songs: AudioFile | None,
-        promotions: str | None,
-        date_created: str | None,
+        songs: list[AudioFile] = None,
+        promotions: str = None,
+        date_created: str = None,
     ) -> None:
         """Initialize a Playlist object with a title, list of songs, promotions, and date created."""
         self.title = title
@@ -80,7 +80,9 @@ class Playlist:
 
     # ideally i take out max_duration from arg3 to improve speed
     def create_playlist_by_criteria(
-        self, criteria_function, max_duration: float
+        self,
+        criteria_function: Callable[[str], bool],
+        max_duration: float,
     ) -> None:
         """Create a playlist based on a criteria function and maximum duration."""
         selected_songs = [song for song in audio_files if criteria_function(song)]
@@ -96,7 +98,8 @@ class Playlist:
             else:
                 break
 
-    def add_songs_by_filename(self, filenames, max_duration):
+    def add_songs_by_filename(self, filenames: list[str], max_duration: float) -> None:
+        """Add songs to the playlist based on a list of filenames and maximum duration."""
         playlist_duration = 0
         self.songs = []
 
@@ -108,15 +111,14 @@ class Playlist:
             else:
                 break
 
-    def export_playlist(self):
+    def export_playlist(self) -> None:
+        """Export the playlist to an audio file and a promotions file."""
         # Create daily archive directory if it doesn't exist
-        if not os.path.exists(DAILY_PLAYLIST_DIRECTORY):
-            os.mkdir(DAILY_PLAYLIST_DIRECTORY)
+        if not Path.exists(DAILY_PLAYLIST_DIRECTORY):
+            Path.mkdir(DAILY_PLAYLIST_DIRECTORY)
 
         self.calculate_metrics()
-        output_path = os.path.join(
-            DAILY_PLAYLIST_DIRECTORY, f"{self.title}-{DATE_STRING}.mp3"
-        )
+        output_path = Path(DAILY_PLAYLIST_DIRECTORY) / f"{self.title}-{DATE_STRING}.mp3"
 
         # Concatenate audio and export to the daily playlist directory
         concatenated_audio = concatenate_audio(self.filenames, LIBRARY_DIRECTORY)
@@ -138,14 +140,14 @@ class Playlist:
             total_duration += mmss_to_seconds(song.duration)
 
         # Update promotions with the track info and licenses
-        self.promotions = track_info + ["\n"] + list(all_licenses)
+        self.promotions = [*track_info, ["\n"], *list(all_licenses)]
 
         # Write to the necessary files for audio and promotions
-        promotions_path = os.path.join(
-            DAILY_PLAYLIST_DIRECTORY, f"{self.title}-promotions.txt"
+        promotions_path = (
+            Path(DAILY_PLAYLIST_DIRECTORY) / f"{self.title}-promotions.txt"
         )
-        with open(promotions_path, "w") as file:
-            for license in self.promotions:
-                file.write(license + "\n")
+        with Path.open(promotions_path, "w") as file:
+            for line in self.promotions:
+                file.write(line + "\n")
 
         print("successfully exported your playlist :D ")
