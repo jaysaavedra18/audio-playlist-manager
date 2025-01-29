@@ -50,7 +50,7 @@ class EditTagsFrame(tk.Frame):
 
         if not files:  # if there was no selection return
             return
-        filenames = [file.name for file in files]
+        filenames = [Path(file).name for file in files]
 
         tag = simpledialog.askstring(f"Add {tag}", f"Enter the {tag} for your song(s):")
         if not tag:
