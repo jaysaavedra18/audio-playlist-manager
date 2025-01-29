@@ -4,10 +4,19 @@ from utils.files import read_json, write_json
 
 
 class DataStore:
-    """A simple key-value store that stores data in memory."""
+    """A singleton key-value store that stores data in memory."""
 
-    def __init__(self) -> None:
-        """Initialize the data store with the specified database."""
+    _instance = None  # Class-level storage for the single instance
+
+    def __new__(cls: any) -> any:
+        """Ensure only one instance of DataStore exists."""
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance._initialize()  # Call a separate initializer  # noqa: SLF001
+        return cls._instance
+
+    def _initialize(self) -> None:
+        """Initialize the data store with the database contents."""
         self.db = read_json(LIBRARY_DATA_PATH, AudioFile)
 
     def get(self, song_name: str) -> AudioFile:
@@ -19,12 +28,12 @@ class DataStore:
         raise ValueError(message)
 
     def add(self, audio_file: AudioFile) -> None:
-        """Add the audio file to the data store."""
+        """Add the audio file to the data store and persist."""
         self.db.append(audio_file)
         write_json(LIBRARY_DATA_PATH, self.db)
 
     def update(self, audio_file: AudioFile) -> None:
-        """Update the audio file in the data store."""
+        """Update an existing audio file in the data store."""
         for i, file in enumerate(self.db):
             if file.song_name == audio_file.song_name:
                 self.db[i] = audio_file
