@@ -2,14 +2,13 @@ import tkinter as tk
 from pathlib import Path
 from tkinter import filedialog
 
-from config import LIBRARY_DATA_PATH, LIBRARY_DIRECTORY
+from config import LIBRARY_DIRECTORY
 from models.audio_file import AudioFile
 from store import data_store
 from utils.converter import seconds_to_mmss
 from utils.files import (
     get_audio_info,
     parse_text_block_into_song,
-    write_json,
 )
 
 from .navigator import navigate_to
