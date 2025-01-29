@@ -1,5 +1,5 @@
-import os
 import tkinter as tk
+from pathlib import Path
 from tkinter import filedialog
 
 from config import LIBRARY_DATA_PATH, LIBRARY_DIRECTORY
@@ -79,8 +79,8 @@ class SongLibraryFrame(tk.Frame):
         collection_viewer = CollectionViewer(audio_files)
         collection_viewer.mainloop()
 
-    def add_songs(self):
-        # Create a new window for adding songs
+    def add_songs(self) -> None:
+        """Add songs to the collection from a new window for file selection."""
         add_songs_window = tk.Toplevel(self)
         add_songs_window.title("Add Songs")
 
@@ -101,7 +101,13 @@ class SongLibraryFrame(tk.Frame):
         )
         add_button.pack()
 
-    def process_data(self, text, filepath, window_to_close):
+    def process_data(
+        self,
+        text: str,
+        filepath: str,
+        window_to_close: tk.Toplevel,
+    ) -> None:
+        """Process the data from the user and add the song to the collection."""
         if text and filepath:
             audio_files = read_json(LIBRARY_DATA_PATH, AudioFile)
             parsed_data = parse_text_block_into_song(text)
@@ -109,7 +115,7 @@ class SongLibraryFrame(tk.Frame):
             # Get audio file data
             song_name = parsed_data["song_name"]
             filename = song_name + ".mp3"
-            new_filepath = os.path.join(LIBRARY_DIRECTORY, filename)
+            new_filepath = Path(LIBRARY_DIRECTORY) / filename
             audio_info = get_audio_info([filepath])
             file_size = f"{audio_info[0] / (1024 * 1024):.2f} MB"
             duration = seconds_to_mmss(int(audio_info[1]))
@@ -127,7 +133,7 @@ class SongLibraryFrame(tk.Frame):
                 genre=[],
                 moods=[],
             )
-            os.rename(filepath, new_filepath)
+            Path.rename(filepath, new_filepath)
             audio_files.append(audio_file)
             write_json(audio_files, LIBRARY_DATA_PATH)
             print("Song added successfully!")
