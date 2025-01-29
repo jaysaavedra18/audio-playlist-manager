@@ -2,9 +2,7 @@ import tkinter as tk
 from pathlib import Path
 from tkinter import filedialog, simpledialog
 
-from config import LIBRARY_DATA_PATH
-from models.audio_file import AudioFile
-from utils.files import read_json, write_json
+from store import data_store
 
 from .navigator import navigate_to
 
@@ -42,7 +40,7 @@ class EditTagsFrame(tk.Frame):
 
     def update_tags(self, tag: str) -> None:
         """Update tags for songs in the library."""
-        audio_files = read_json(LIBRARY_DATA_PATH, AudioFile)
+        audio_files = data_store.get_all()
         files = filedialog.askopenfilenames(
             title="Select MP3 Files",
             filetypes=(("MP3 files", "*.mp3"), ("All files", "*.*")),
@@ -59,11 +57,15 @@ class EditTagsFrame(tk.Frame):
         if not user_input:
             print("No tag provided")
 
+        # Update the tag for the selected song
         for audio_file in audio_files:
             if audio_file.filename in filenames:
                 if tag == "moods":
+                    if user_input in audio_file.moods:
+                        break
                     audio_file.add_mood(user_input)
                 elif tag == "genre":
+                    if user_input in audio_file.genres:
+                        break
                     audio_file.add_genre(user_input)
-
-        write_json(audio_files, LIBRARY_DATA_PATH)
+                data_store.update(audio_file)
