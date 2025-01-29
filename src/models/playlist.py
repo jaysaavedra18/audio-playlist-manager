@@ -1,17 +1,14 @@
+from __future__ import annotations
+
 import os
 import random
-from typing import List
+from typing import Optional
 
 from config import (
     DAILY_PLAYLIST_DIRECTORY,
     DATE_STRING,
     LIBRARY_DATA_PATH,
     LIBRARY_DIRECTORY,
-)
-from utils.files import (
-    concatenate_audio,
-    export_audio,
-    read_json,
 )
 from models.audio_file import AudioFile
 from utils.converter import (
@@ -20,13 +17,27 @@ from utils.converter import (
     mmss_to_seconds,
     seconds_to_mmss,
 )
+from utils.files import (
+    concatenate_audio,
+    export_audio,
+    read_json,
+)
 
 # Import data
 audio_files = read_json(LIBRARY_DATA_PATH, AudioFile)
 
 
 class Playlist:
-    def __init__(self, title: str, songs: List[AudioFile] = None, promotions=None, date_created=None):
+    """A class to represent a playlist of audio files."""
+
+    def __init__(
+        self,
+        title: str,
+        songs: AudioFile | None,
+        promotions: str | None,
+        date_created: str | None,
+    ) -> None:
+        """Initialize a Playlist object with a title, list of songs, promotions, and date created."""
         self.title = title
         self.songs = songs or []
         self.promotions = promotions or []
@@ -36,19 +47,22 @@ class Playlist:
         if self.songs:
             self.calculate_metrics()
 
-    def calculate_metrics(self):
-        # Calculate total duration
-        total_duration_seconds = sum(mmss_to_seconds(song.duration) for song in self.songs)
+    def calculate_metrics(self) -> None:
+        """Calculate the total duration and file size of the playlist."""
+        total_duration_seconds = sum(
+            mmss_to_seconds(song.duration) for song in self.songs
+        )
         self.total_duration = seconds_to_mmss(total_duration_seconds)
 
-        # Calculate total file size
-        total_file_size_bytes = sum(formatted_size_to_bytes(song.file_size) for song in self.songs)
+        total_file_size_bytes = sum(
+            formatted_size_to_bytes(song.file_size) for song in self.songs
+        )
         self.total_file_size = bytes_to_formatted_size(total_file_size_bytes)
 
-        # Get filenames for the playlist
         self.filenames = [song.filename for song in self.songs]
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
+        """Return a dictionary representation of the playlist."""
         return {
             "title": self.title,
             "songs": [song.to_dict() for song in self.songs],
@@ -56,14 +70,19 @@ class Playlist:
             "date_created": self.date_created,
         }
 
-    def add_song(self, song: AudioFile):
+    def add_song(self, song: AudioFile) -> None:
+        """Add a song to the playlist."""
         self.songs.append(song)
 
-    def remove_song(self, song: AudioFile):
+    def remove_song(self, song: AudioFile) -> None:
+        """Remove a song from the playlist."""
         self.songs.remove(song)
 
     # ideally i take out max_duration from arg3 to improve speed
-    def create_playlist_by_criteria(self, criteria_function, max_duration):
+    def create_playlist_by_criteria(
+        self, criteria_function, max_duration: float
+    ) -> None:
+        """Create a playlist based on a criteria function and maximum duration."""
         selected_songs = [song for song in audio_files if criteria_function(song)]
         random.shuffle(selected_songs)
 
@@ -95,7 +114,9 @@ class Playlist:
             os.mkdir(DAILY_PLAYLIST_DIRECTORY)
 
         self.calculate_metrics()
-        output_path = os.path.join(DAILY_PLAYLIST_DIRECTORY, f"{self.title}-{DATE_STRING}.mp3")
+        output_path = os.path.join(
+            DAILY_PLAYLIST_DIRECTORY, f"{self.title}-{DATE_STRING}.mp3"
+        )
 
         # Concatenate audio and export to the daily playlist directory
         concatenated_audio = concatenate_audio(self.filenames, LIBRARY_DIRECTORY)
@@ -121,7 +142,8 @@ class Playlist:
 
         # Write to the necessary files for audio and promotions
         promotions_path = os.path.join(
-            DAILY_PLAYLIST_DIRECTORY, f"{self.title}-promotions.txt")
+            DAILY_PLAYLIST_DIRECTORY, f"{self.title}-promotions.txt"
+        )
         with open(promotions_path, "w") as file:
             for license in self.promotions:
                 file.write(license + "\n")
