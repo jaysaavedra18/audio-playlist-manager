@@ -2,11 +2,18 @@ import os
 import tkinter as tk
 from tkinter import filedialog
 
+from navigator import navigate_to
+
 from config import LIBRARY_DATA_PATH, LIBRARY_DIRECTORY
-from .navigator import navigate_to
 from models.audio_file import AudioFile
 from utils.converter import seconds_to_mmss
-from utils.files import get_audio_info, read_json, parse_text_block_into_song, write_json
+from utils.files import (
+    get_audio_info,
+    parse_text_block_into_song,
+    read_json,
+    write_json,
+)
+
 
 class CollectionViewer(tk.Toplevel):  # Use Toplevel for a separate window
     def __init__(self, audio_files):
@@ -20,8 +27,11 @@ class CollectionViewer(tk.Toplevel):  # Use Toplevel for a separate window
         self.listbox.pack(fill=tk.BOTH, expand=True)
 
         for audio_file in self.audio_files:
-            item_text = f"{audio_file.index}: {audio_file.song_name} - {audio_file.artist}"
+            item_text = (
+                f"{audio_file.index}: {audio_file.song_name} - {audio_file.artist}"
+            )
             self.listbox.insert(tk.END, item_text)
+
 
 class SongLibraryFrame(tk.Frame):
     def __init__(self, master):
@@ -32,19 +42,25 @@ class SongLibraryFrame(tk.Frame):
 
         # Finder window
         collection_button = tk.Button(
-            self, text="Your Collection", command=self.show_collection_viewer)
+            self, text="Your Collection", command=self.show_collection_viewer
+        )
         collection_button.pack()
 
-        add_songs_button = tk.Button(
-            self, text="Add Songs", command=self.add_songs)
+        add_songs_button = tk.Button(self, text="Add Songs", command=self.add_songs)
         add_songs_button.pack()
 
         # Frame 1st for selection of tag
         # Finder window
-        tags_button = tk.Button(self, text="Edit Tags", command=lambda: navigate_to("edit_tags", master))
+        tags_button = tk.Button(
+            self, text="Edit Tags", command=lambda: navigate_to("edit_tags", master)
+        )
         tags_button.pack()
 
-        back_button = tk.Button(self, text="Back to Main Menu", command=lambda: navigate_to("main_menu", master))
+        back_button = tk.Button(
+            self,
+            text="Back to Main Menu",
+            command=lambda: navigate_to("main_menu", master),
+        )
         back_button.pack()
 
     def show_collection_viewer(self):
@@ -64,8 +80,12 @@ class SongLibraryFrame(tk.Frame):
         data_text.pack()
 
         add_button = tk.Button(
-            add_songs_window, text="Add and Process", command=lambda: self.process_data(data_text.get("1.0", tk.END),
-            selected_file_path, add_songs_window))
+            add_songs_window,
+            text="Add and Process",
+            command=lambda: self.process_data(
+                data_text.get("1.0", tk.END), selected_file_path, add_songs_window
+            ),
+        )
         add_button.pack()
 
     def process_data(self, text, filepath, window_to_close):
