@@ -7,15 +7,15 @@ from sklearn.utils import shuffle
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.linear_model import Lasso
+from sklearn.impute import SimpleImputer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
 from xgboost import XGBClassifier
 
 
-# Define a list of feature columns
-feature_columns = [
-    # Librosa features
+# Define the included feature columns
+librosa_features = [
     "mfcc",
     "chroma_cens",
     "chroma_cqt",
@@ -27,32 +27,75 @@ feature_columns = [
     "spectral_rolloff",
     "rmse",
     "zcr",
-    # EchoNest features
 ]
+
+echonest_features = ("echonest", ["audio_features"])
+
+
+def prepare_dataset_splits(tracks, features, subset: str) -> tuple:
+    """Prepare and split the dataset into training, validation, and test sets with combined features."""
+    split = tracks["set", "subset"] <= subset
+    train = tracks["set", "split"] == "training"
+    test = tracks["set", "split"] == "test"
+    val = tracks["set", "split"] == "validation"
+
+    # Select the genre labels (target) and feature values for each split
+    y_train = tracks.loc[split & train, ("track", "genre_top")]
+    y_val = tracks.loc[split & val, ("track", "genre_top")]
+    y_test = tracks.loc[split & test, ("track", "genre_top")]
+
+    # Select the feature values for each split
+    X_train_librosa = features.loc[split & train, librosa_features].values
+    X_val_librosa = features.loc[split & val, librosa_features].values
+    X_test_librosa = features.loc[split & test, librosa_features].values
+
+    X_train_echonest = features.loc[split & train, echonest_features].values
+    X_val_echonest = features.loc[split & val, echonest_features].values
+    X_test_echonest = features.loc[split & test, echonest_features].values
+
+    # Combine both feature sets for each split
+    X_train_combined = np.hstack([X_train_librosa, X_train_echonest])
+    X_val_combined = np.hstack([X_val_librosa, X_val_echonest])
+    X_test_combined = np.hstack([X_test_librosa, X_test_echonest])
+
+    # Handle missing values (if any) using SimpleImputer
+    imputer = SimpleImputer(strategy="mean")
+    X_train = imputer.fit_transform(X_train_combined)
+    X_val = imputer.transform(X_val_combined)
+    X_test = imputer.transform(X_test_combined)
+
+    # Flatten the feature arrays if needed (if features are multidimensional, e.g., MFCC)
+    X_train = X_train.reshape(X_train.shape[0], -1)
+    X_test = X_test.reshape(X_test.shape[0], -1)
+    X_val = X_val.reshape(X_val.shape[0], -1)
+
+    return X_train, X_val, X_test, y_train, y_val, y_test
 
 
 # Define a function for preprocessing data
 def preprocess_data(X_train, X_test, y_train, y_test, reduce_features=False):
-    # Shuffle training data
+    """Preprocess the dataset by shuffling, encoding labels, and standardizing features."""
+
+    # Shuffle training data to improve generalization
     X_train, y_train = shuffle(X_train, y_train, random_state=42)
 
-    # Encode labels
+    # Encode labels into numerical values for classification
     label_encoder = LabelEncoder()
     y_train_encoded = label_encoder.fit_transform(y_train)
     y_test_encoded = label_encoder.transform(y_test)
 
-    # Standardize features
+    # Standardize feature values to have mean=0 and variance=1
     scaler = StandardScaler(copy=False)
     scaler.fit_transform(X_train)
     scaler.transform(X_test)
 
     if reduce_features:
-        # Apply PCA for dimensionality reduction
-        pca = PCA(n_components=0.99)  # Keep 99% of variance
+        # Apply PCA for dimensionality reduction, keeping 99% of variance
+        pca = PCA(n_components=0.99)
         X_train = pca.fit_transform(X_train)
         X_test = pca.transform(X_test)
 
-        # Use Lasso for feature selection
+        # Apply Lasso for feature selection, removing features with zero coefficient
         lasso = Lasso(alpha=0.001)
         lasso.fit(X_train, y_train_encoded)
         mask = lasso.coef_ != 0
