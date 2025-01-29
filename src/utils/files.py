@@ -51,8 +51,6 @@ def export_audio(audio: AudioSegment, file_path: str) -> None:
     audio.export(get_unique_file_name(file_path), format="mp3")
 
 
-# text_io.py
-
 # Text input/output functions
 
 
@@ -90,8 +88,6 @@ def parse_text_block_into_song(text: str) -> dict:
         "licenses": licenses,
     }
 
-
-# json_io.py
 
 # JSON/object input/output functions
 
