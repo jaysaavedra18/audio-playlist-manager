@@ -2,8 +2,6 @@ import os
 import tkinter as tk
 from tkinter import filedialog
 
-from navigator import navigate_to
-
 from config import LIBRARY_DATA_PATH, LIBRARY_DIRECTORY
 from models.audio_file import AudioFile
 from utils.converter import seconds_to_mmss
@@ -13,6 +11,8 @@ from utils.files import (
     read_json,
     write_json,
 )
+
+from .navigator import navigate_to
 
 
 class CollectionViewer(tk.Toplevel):  # Use Toplevel for a separate window
@@ -45,7 +45,9 @@ class SongLibraryFrame(tk.Frame):
 
         # Finder window
         collection_button = tk.Button(
-            self, text="Your Collection", command=self.show_collection_viewer
+            self,
+            text="Your Collection",
+            command=self.show_collection_viewer,
         )
         collection_button.pack()
 
@@ -55,7 +57,9 @@ class SongLibraryFrame(tk.Frame):
         # Frame 1st for selection of tag
         # Finder window
         tags_button = tk.Button(
-            self, text="Edit Tags", command=lambda: navigate_to("edit_tags", master)
+            self,
+            text="Edit Tags",
+            command=lambda: navigate_to("edit_tags", master),
         )
         tags_button.pack()
 
@@ -86,7 +90,9 @@ class SongLibraryFrame(tk.Frame):
             add_songs_window,
             text="Add and Process",
             command=lambda: self.process_data(
-                data_text.get("1.0", tk.END), selected_file_path, add_songs_window
+                data_text.get("1.0", tk.END),
+                selected_file_path,
+                add_songs_window,
             ),
         )
         add_button.pack()
