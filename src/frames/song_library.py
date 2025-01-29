@@ -134,7 +134,6 @@ class SongLibraryFrame(tk.Frame):
                 moods=[],
             )
             Path.rename(filepath, new_filepath)
-            audio_files.append(audio_file)
-            write_json(LIBRARY_DATA_PATH, audio_files)
+            data_store.add(audio_file)
             print("Song added successfully!")
             window_to_close.destroy()
