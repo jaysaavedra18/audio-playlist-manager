@@ -16,7 +16,10 @@ from utils.files import (
 
 
 class CollectionViewer(tk.Toplevel):  # Use Toplevel for a separate window
-    def __init__(self, audio_files):
+    """CollectionViewer is a separate window that displays the audio files in the collection."""
+
+    def __init__(self, audio_files: list[AudioFile]) -> None:
+        """Initialize the CollectionViewer window."""
         super().__init__()
         self.audio_files = audio_files
 
