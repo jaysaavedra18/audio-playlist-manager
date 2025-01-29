@@ -73,7 +73,8 @@ class SongLibraryFrame(tk.Frame):
         )
         back_button.pack()
 
-    def show_collection_viewer(self):
+    def show_collection_viewer(self) -> None:
+        """Show the CollectionViewer window."""
         audio_files = read_json(LIBRARY_DATA_PATH, AudioFile)
         collection_viewer = CollectionViewer(audio_files)
         collection_viewer.mainloop()
