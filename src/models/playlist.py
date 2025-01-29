@@ -7,10 +7,10 @@ from typing import Callable
 from config import (
     DAILY_PLAYLIST_DIRECTORY,
     DATE_STRING,
-    LIBRARY_DATA_PATH,
     LIBRARY_DIRECTORY,
 )
 from models.audio_file import AudioFile
+from store import data_store
 from utils.converter import (
     bytes_to_formatted_size,
     formatted_size_to_bytes,
@@ -20,11 +20,10 @@ from utils.converter import (
 from utils.files import (
     concatenate_audio,
     export_audio,
-    read_json,
 )
 
 # Import data
-audio_files = read_json(LIBRARY_DATA_PATH, AudioFile)
+audio_files = data_store.get_all()
 
 
 class Playlist:
