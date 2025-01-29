@@ -2,7 +2,6 @@
 ###################
 yt_assets/
 audio/
-data/
 __pycache__/
 
 # Environment #
@@ -38,6 +37,7 @@ venv/
 *.log
 *.sql
 *.sqlite
+*.json
 
 # OS generated files #
 ######################
