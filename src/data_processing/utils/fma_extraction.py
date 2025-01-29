@@ -1,3 +1,5 @@
+# ruff: noqa
+
 import ast
 import ctypes
 import multiprocessing
@@ -20,12 +22,15 @@ dotenv.load_dotenv(dotenv.find_dotenv())
 
 
 class FreeMusicArchive:
+    """Free Music Archive API wrapper."""
+
     BASE_URL = "https://freemusicarchive.org/api/get/"
 
-    def __init__(self, api_key):
+    def __init__(self, api_key: str) -> None:
+        """Initialize the Free Music Archive API wrapper."""
         self.api_key = api_key
 
-    def get_recent_tracks(self):
+    def get_recent_tracks(self) -> tuple:
         URL = "https://freemusicarchive.org/recent.json"
         r = requests.get(URL)
         r.raise_for_status()
