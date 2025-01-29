@@ -10,7 +10,6 @@ from utils.converter import hhmmss_to_seconds
 from .navigator import navigate_to
 
 
-# maybe updating input to select from the possible values
 class CreateByFrame(tk.Frame):
     """CreateByFrame class is a frame that allows users to create a playlist based on a specific criteria."""
 
