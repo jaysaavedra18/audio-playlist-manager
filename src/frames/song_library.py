@@ -37,7 +37,10 @@ class CollectionViewer(tk.Toplevel):  # Use Toplevel for a separate window
 
 
 class SongLibraryFrame(tk.Frame):
-    def __init__(self, master):
+    """SongLibraryFrame is a frame that displays the song library options."""
+
+    def __init__(self, master: tk.Tk) -> None:
+        """Initialize the SongLibraryFrame."""
         super().__init__(master)
 
         label = tk.Label(self, text="Song Library")
