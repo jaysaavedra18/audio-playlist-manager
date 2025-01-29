@@ -4,11 +4,11 @@ from tkinter import filedialog
 
 from config import LIBRARY_DATA_PATH, LIBRARY_DIRECTORY
 from models.audio_file import AudioFile
+from store import data_store
 from utils.converter import seconds_to_mmss
 from utils.files import (
     get_audio_info,
     parse_text_block_into_song,
-    read_json,
     write_json,
 )
 
@@ -75,7 +75,7 @@ class SongLibraryFrame(tk.Frame):
 
     def show_collection_viewer(self) -> None:
         """Show the CollectionViewer window."""
-        audio_files = read_json(LIBRARY_DATA_PATH, AudioFile)
+        audio_files = data_store.get_all()
         collection_viewer = CollectionViewer(audio_files)
         collection_viewer.mainloop()
 
@@ -109,7 +109,7 @@ class SongLibraryFrame(tk.Frame):
     ) -> None:
         """Process the data from the user and add the song to the collection."""
         if text and filepath:
-            audio_files = read_json(LIBRARY_DATA_PATH, AudioFile)
+            audio_files = data_store.get_all()
             parsed_data = parse_text_block_into_song(text)
             index = len(audio_files)
             # Get audio file data
