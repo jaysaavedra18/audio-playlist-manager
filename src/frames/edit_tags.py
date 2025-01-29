@@ -52,15 +52,18 @@ class EditTagsFrame(tk.Frame):
             return
         filenames = [Path(file).name for file in files]
 
-        tag = simpledialog.askstring(f"Add {tag}", f"Enter the {tag} for your song(s):")
-        if not tag:
-            pass
+        user_input = simpledialog.askstring(
+            f"Add {tag}",
+            f"Enter the {tag} for your song(s):",
+        )
+        if not user_input:
+            print("No tag provided")
 
         for audio_file in audio_files:
             if audio_file.filename in filenames:
                 if tag == "moods":
-                    audio_file.add_mood(tag)
+                    audio_file.add_mood(user_input)
                 elif tag == "genre":
-                    audio_file.add_genre(tag)
+                    audio_file.add_genre(user_input)
 
         write_json(audio_files, LIBRARY_DATA_PATH)
