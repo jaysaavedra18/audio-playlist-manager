@@ -27,6 +27,10 @@ class DataStore:
         message = f"Audio file with song name '{song_name}' not found."
         raise ValueError(message)
 
+    def get_all(self) -> list[AudioFile]:
+        """Get all audio files in the data store."""
+        return self.db
+
     def add(self, audio_file: AudioFile) -> None:
         """Add the audio file to the data store and persist."""
         self.db.append(audio_file)
