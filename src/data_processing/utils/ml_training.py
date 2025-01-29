@@ -1,18 +1,16 @@
-# ruff: noqa
-
 import numpy as np
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import accuracy_score
-from sklearn.utils import shuffle
-from sklearn.preprocessing import LabelEncoder, StandardScaler
+from pandas import DataFrame
 from sklearn.decomposition import PCA
-from sklearn.linear_model import Lasso
-from sklearn.impute import SimpleImputer
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.impute import SimpleImputer
+from sklearn.linear_model import Lasso
+from sklearn.metrics import accuracy_score
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.svm import SVC
+from sklearn.utils import shuffle
 from xgboost import XGBClassifier
-
 
 # Define the included feature columns
 librosa_features = [
@@ -32,7 +30,11 @@ librosa_features = [
 echonest_features = ("echonest", ["audio_features"])
 
 
-def prepare_dataset_splits(tracks, features, subset: str) -> tuple:
+def prepare_dataset_splits(
+    tracks: DataFrame,
+    features: DataFrame,
+    subset: str,
+) -> tuple:
     """Prepare and split the dataset into training, validation, and test sets with combined features."""
     split = tracks["set", "subset"] <= subset
     train = tracks["set", "split"] == "training"
@@ -45,13 +47,13 @@ def prepare_dataset_splits(tracks, features, subset: str) -> tuple:
     y_test = tracks.loc[split & test, ("track", "genre_top")]
 
     # Select the feature values for each split
-    X_train_librosa = features.loc[split & train, librosa_features].values
-    X_val_librosa = features.loc[split & val, librosa_features].values
-    X_test_librosa = features.loc[split & test, librosa_features].values
+    X_train_librosa = features.loc[split & train, librosa_features].to_numpy()
+    X_val_librosa = features.loc[split & val, librosa_features].to_numpy()
+    X_test_librosa = features.loc[split & test, librosa_features].to_numpy()
 
-    X_train_echonest = features.loc[split & train, echonest_features].values
-    X_val_echonest = features.loc[split & val, echonest_features].values
-    X_test_echonest = features.loc[split & test, echonest_features].values
+    X_train_echonest = features.loc[split & train, echonest_features].to_numpy()
+    X_val_echonest = features.loc[split & val, echonest_features].to_numpy()
+    X_test_echonest = features.loc[split & test, echonest_features].to_numpy()
 
     # Combine both feature sets for each split
     X_train_combined = np.hstack([X_train_librosa, X_train_echonest])
@@ -73,9 +75,14 @@ def prepare_dataset_splits(tracks, features, subset: str) -> tuple:
 
 
 # Define a function for preprocessing data
-def preprocess_data(X_train, X_test, y_train, y_test, reduce_features=False):
+def preprocess_data(
+    X_train: np.ndarray,
+    X_test: np.ndarray,
+    y_train: DataFrame,
+    y_test: DataFrame,
+    reduce_features=False,  # noqa: ANN001, FBT002
+) -> tuple:
     """Preprocess the dataset by shuffling, encoding labels, and standardizing features."""
-
     # Shuffle training data to improve generalization
     X_train, y_train = shuffle(X_train, y_train, random_state=42)
 
@@ -108,34 +115,42 @@ def preprocess_data(X_train, X_test, y_train, y_test, reduce_features=False):
 
 
 # Define a function to initialize the classifier
-def get_classifier(model_classifier="SVM"):
+def get_classifier(model_classifier: str = "SVM") -> tuple:
+    """Initialize and return the classifier based on the model_classifier parameter."""
     if model_classifier == "RF":
         return RandomForestClassifier(n_estimators=100, random_state=42)
-    elif model_classifier == "GPM":
+    if model_classifier == "GPM":
         return XGBClassifier(
-            n_estimators=100, learning_rate=0.1, max_depth=3, random_state=42, n_jobs=-1
+            n_estimators=100,
+            learning_rate=0.1,
+            max_depth=3,
+            random_state=42,
+            n_jobs=-1,
         )
-    elif model_classifier == "NN":
+    if model_classifier == "NN":
         return MLPClassifier(
             hidden_layer_sizes=(128, 64),
             activation="relu",
             max_iter=200,
             random_state=42,
         )
-    elif model_classifier == "SVM":
+    if model_classifier == "SVM":
         return SVC()
-    elif model_classifier == "KNN":
+    if model_classifier == "KNN":
         return KNeighborsClassifier(n_neighbors=5)
-    else:
-        raise ValueError(
-            "Invalid model_classifier. Choose from 'RF', 'GPM', 'NN', 'SVM'."
-        )
+    message = "Invalid model_classifier. Choose from 'RF', 'GPM', 'NN', 'SVM'."
+    raise ValueError(message)
 
 
 # Define a function to train and evaluate the model
 def train_and_evaluate(
-    X_train, X_test, y_train_encoded, y_test_encoded, model_classifier="SVM"
-):
+    X_train: np.ndarray,
+    X_test: np.ndarray,
+    y_train_encoded: DataFrame,
+    y_test_encoded: DataFrame,
+    model_classifier: str = "SVM",
+) -> tuple:
+    """Train and evaluate the classifier using the training and test sets."""
     clf = get_classifier(model_classifier)
     clf.fit(X_train, y_train_encoded)
     if model_classifier == "KNN":
