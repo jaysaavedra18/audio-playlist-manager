@@ -23,4 +23,3 @@ kiwisolver==1.4.8
 lazy_loader==0.4
 librosa==0.10.2.post1
 llvmlite==0.44.0
-MarkupSafe==3.0.2
