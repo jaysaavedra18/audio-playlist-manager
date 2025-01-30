@@ -43,4 +43,3 @@ ptyprocess==0.7.0
 pure_eval==0.2.3
 pycparser==2.22
 pydot==3.0.4
-pydub==0.25.1
