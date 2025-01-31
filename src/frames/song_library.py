@@ -2,7 +2,7 @@ import tkinter as tk
 from pathlib import Path
 from tkinter import filedialog
 
-from config import LIBRARY_DIRECTORY
+from config.config import LIBRARY_DIRECTORY
 from models.audio_file import AudioFile
 from store import data_store
 from utils.converter import seconds_to_mmss
