@@ -23,7 +23,3 @@ LIBRARY_DIRECTORY = Path(AUDIO_DIRECTORY) / "lofi"
 
 # Define data file paths
 LIBRARY_DATA_PATH = Path(DATA_DIRECTORY) / "library_data.json"
-
-# Define FMA dataset file paths
-FMA_DATA_DIRECTORY = Path(AUDIO_DIRECTORY) / "fma_medium"
-FMA_METADATA_DIRECTORY = Path(AUDIO_DIRECTORY) / "fma_metadata"
