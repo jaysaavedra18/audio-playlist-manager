@@ -4,7 +4,7 @@ from .date_config import DATE_STRING
 from .env_config import AUDIO_DIRECTORY
 
 BASE_DIRECTORY = Path(__file__).resolve().parent.parent
-DATA_DIRECTORY = Path(BASE_DIRECTORY) / "src" / "data"
+DATA_DIRECTORY = Path(BASE_DIRECTORY) / "data"
 
 DAILY_PLAYLIST_DIRECTORY = Path(AUDIO_DIRECTORY) / "output" / f"{DATE_STRING}"
 DOWNLOADS_DIRECTORY = Path(AUDIO_DIRECTORY) / "misc"
