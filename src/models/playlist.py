@@ -4,7 +4,7 @@ import random
 from pathlib import Path
 from typing import Callable
 
-from config import (
+from config.config import (
     DAILY_PLAYLIST_DIRECTORY,
     DATE_STRING,
     LIBRARY_DIRECTORY,
