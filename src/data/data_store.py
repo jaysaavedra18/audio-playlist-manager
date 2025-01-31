@@ -17,6 +17,7 @@ class DataStore:
 
     def _initialize(self) -> None:
         """Initialize the data store with the database contents."""
+        print("Library data path:", LIBRARY_DATA_PATH)
         self.db = read_json(LIBRARY_DATA_PATH, AudioFile)
         print(f"Data store initialized with {len(self.db)} audio files.")
 
