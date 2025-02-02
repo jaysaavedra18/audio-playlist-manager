@@ -1,6 +1,7 @@
 # utils.py
 
 BYTES_PER_UNIT = 1024
+SECONDS_PER_HOUR = 3600
 
 
 def seconds_to_hhmmss(seconds: float) -> str:

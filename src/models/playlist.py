@@ -12,9 +12,11 @@ from config.config import (
 from models.audio_file import AudioFile
 from store import data_store
 from utils.converter import (
+    SECONDS_PER_HOUR,
     bytes_to_formatted_size,
     formatted_size_to_bytes,
     mmss_to_seconds,
+    seconds_to_hhmmss,
     seconds_to_mmss,
 )
 from utils.files import (
@@ -130,7 +132,13 @@ class Playlist:
 
         for song in self.songs:
             # Generate timestamp for each song
-            timestamp = f"{seconds_to_mmss(total_duration)} {song.song_name} by {song.artist} | {song.artist_link}"
+            timestamp = ""
+            if (
+                total_duration < SECONDS_PER_HOUR
+            ):  # Total duration is less than an hour, use mm:ss
+                timestamp = f"{seconds_to_mmss(total_duration)} {song.song_name} by {song.artist} | {song.artist_link}"
+            else:  # Total duration is an hour or more, use hh:mm:ss
+                timestamp = f"{seconds_to_hhmmss(total_duration)} {song.song_name} by {song.artist} | {song.artist_link}"
             track_info.append(timestamp)
 
             # Add licenses to the set to avoid duplicates
