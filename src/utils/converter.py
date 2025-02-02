@@ -53,5 +53,5 @@ def formatted_size_to_bytes(formatted_size: str) -> int:
     size, unit = formatted_size.split()
     size = float(size)
     unit_index = ["B", "KB", "MB", "GB", "TB"].index(unit)
-    bytes_size = size * (1024**unit_index)
+    bytes_size = size * (BYTES_PER_UNIT**unit_index)
     return int(bytes_size)
