@@ -102,23 +102,22 @@ class Playlist:
         self.songs = []
 
         for song in audio_files:
-            if playlist_duration + mmss_to_seconds(song.duration) <= max_duration:
+            duration = mmss_to_seconds(song.duration)
+            if playlist_duration + duration <= max_duration:
                 if song.filename in filenames:
                     self.add_song(song)
-                    playlist_duration += mmss_to_seconds(song.duration)
+                    playlist_duration += duration
             else:
                 break
 
     def export_playlist(self) -> None:
         """Export the playlist to an audio file and a promotions file."""
         # Create daily archive directory if it doesn't exist
-        if not Path.exists(DAILY_PLAYLIST_DIRECTORY):
-            Path.mkdir(DAILY_PLAYLIST_DIRECTORY)
-
+        Path(DAILY_PLAYLIST_DIRECTORY).mkdir(exist_ok=True)
         self.calculate_metrics()
-        output_path = Path(DAILY_PLAYLIST_DIRECTORY) / f"{self.title}-{DATE_STRING}.mp3"
 
         # Concatenate audio and export to the daily playlist directory
+        output_path = Path(DAILY_PLAYLIST_DIRECTORY) / f"{self.title}-{DATE_STRING}.mp3"
         concatenated_audio = concatenate_audio(self.filenames, LIBRARY_DIRECTORY)
         export_audio(concatenated_audio, output_path)
 
