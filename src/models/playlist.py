@@ -148,7 +148,7 @@ class Playlist:
         promotions_path = Path(DAILY_PLAYLIST_DIRECTORY) / f"{self.title}-promotions.txt"  # fmt: skip
 
         # Write to the necessary files for audio and promotions
-        with promotions_path.open("W") as file:
+        with promotions_path.open("w") as file:
             file.write("\n".join(self.promotions) + "\n")
 
         print("successfully exported your playlist :D ")
