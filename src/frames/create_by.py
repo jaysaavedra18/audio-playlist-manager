@@ -67,7 +67,7 @@ class CreateByFrame(tk.Frame):
             criteria = simpledialog.askstring(
                 "Enter Criteria",
                 f"Enter the {criteria}:",
-            )
+            ).lower()
             if not criteria:
                 return
         else:
