@@ -85,7 +85,6 @@ class Playlist:
         """Create a playlist based on a criteria function and maximum duration."""
         selected_songs = [song for song in audio_files if criteria_function(song)]
         random.shuffle(selected_songs)
-
         playlist_duration = 0
         self.songs = []
 
