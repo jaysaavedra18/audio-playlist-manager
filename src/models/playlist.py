@@ -89,9 +89,10 @@ class Playlist:
         self.songs = []
 
         for song in selected_songs:
-            if playlist_duration + mmss_to_seconds(song.duration) <= max_duration:
+            duration = mmss_to_seconds(song.duration)
+            if playlist_duration + duration <= max_duration:
                 self.add_song(song)
-                playlist_duration += mmss_to_seconds(song.duration)
+                playlist_duration += duration
             else:
                 break
 
