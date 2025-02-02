@@ -53,7 +53,7 @@ class EditTagsFrame(tk.Frame):
         user_input = simpledialog.askstring(
             f"Add {tag}",
             f"Enter the {tag} for your song(s):",
-        ).lower()
+        )
         if not user_input:
             print("No tag provided")
 
