@@ -30,7 +30,7 @@ def mmss_to_seconds(formatted_time: str) -> int:
     """Convert a time string in 'mm:ss' format to the total number of seconds."""
     try:
         minutes, seconds = map(int, formatted_time.split(":"))
-        return minutes * 60 + seconds
+        return minutes * SECONDS_PER_MINUTE + seconds
     except ValueError as err:
         message = "Invalid input format. Please use 'mm:ss' format."
         raise ValueError(message) from err
