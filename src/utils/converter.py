@@ -21,7 +21,7 @@ def hhmmss_to_seconds(formatted_time: str) -> float:
 
 def seconds_to_mmss(seconds: float) -> str:
     """Convert a given number of seconds to a string in the 'mm:ss' format."""
-    minutes = seconds // 60
+    minutes = seconds // SECONDS_PER_MINUTE
     seconds %= 60
     return f"{minutes:02d}:{seconds:02d}"
 
