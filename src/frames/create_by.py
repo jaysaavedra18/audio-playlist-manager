@@ -93,12 +93,16 @@ class CreateByFrame(tk.Frame):
     @staticmethod
     def genre_helper(song: str, genre: str) -> bool:
         """Return True if the song's genre matches the user's input."""
-        return genre.lower() in (g.lower() for g in song.genre)
+        return genre.lower() in (
+            g.lower() for g in song.genre if isinstance(song.genre, list)
+        )
 
     @staticmethod
     def mood_helper(song: str, mood: str) -> bool:
         """Return True if the song's mood matches the user's input."""
-        return mood.lower() in (s.lower() for s in song.moods)
+        return mood.lower() in (
+            s.lower() for s in song.moods if isinstance(song.moods, list)
+        )
 
     @staticmethod
     def artist_helper(song: str, artist: str) -> bool:
