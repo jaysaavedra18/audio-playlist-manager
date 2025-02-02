@@ -50,17 +50,14 @@ class Playlist:
 
     def calculate_metrics(self) -> None:
         """Calculate the total duration and file size of the playlist."""
-        total_duration_seconds = sum(
-            mmss_to_seconds(song.duration) for song in self.songs
-        )
+        # fmt: off
+        total_duration_seconds = sum(mmss_to_seconds(song.duration) for song in self.songs)
         self.total_duration = seconds_to_mmss(total_duration_seconds)
 
-        total_file_size_bytes = sum(
-            formatted_size_to_bytes(song.file_size) for song in self.songs
-        )
+        total_file_size_bytes = sum(formatted_size_to_bytes(song.file_size) for song in self.songs)
         self.total_file_size = bytes_to_formatted_size(total_file_size_bytes)
-
         self.filenames = [song.filename for song in self.songs]
+        # fmt: on
 
     def to_dict(self) -> dict:
         """Return a dictionary representation of the playlist."""
