@@ -16,7 +16,7 @@ def seconds_to_hhmmss(seconds: float) -> str:
 def hhmmss_to_seconds(formatted_time: str) -> float:
     """Convert a formatted time string in "HH:MM:SS" format to time duration in seconds."""
     hours, minutes, seconds = map(int, formatted_time.split(":"))
-    return hours * SECONDS_PER_HOUR + minutes * 60 + seconds
+    return hours * SECONDS_PER_HOUR + minutes * SECONDS_PER_MINUTE + seconds
 
 
 def seconds_to_mmss(seconds: float) -> str:
