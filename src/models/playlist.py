@@ -12,9 +12,11 @@ from config.config import (
 from models.audio_file import AudioFile
 from store import data_store
 from utils.converter import (
+    SECONDS_PER_HOUR,
     bytes_to_formatted_size,
     formatted_size_to_bytes,
     mmss_to_seconds,
+    seconds_to_hhmmss,
     seconds_to_mmss,
 )
 from utils.files import (
@@ -48,17 +50,14 @@ class Playlist:
 
     def calculate_metrics(self) -> None:
         """Calculate the total duration and file size of the playlist."""
-        total_duration_seconds = sum(
-            mmss_to_seconds(song.duration) for song in self.songs
-        )
+        # fmt: off
+        total_duration_seconds = sum(mmss_to_seconds(song.duration) for song in self.songs)
         self.total_duration = seconds_to_mmss(total_duration_seconds)
 
-        total_file_size_bytes = sum(
-            formatted_size_to_bytes(song.file_size) for song in self.songs
-        )
+        total_file_size_bytes = sum(formatted_size_to_bytes(song.file_size) for song in self.songs)
         self.total_file_size = bytes_to_formatted_size(total_file_size_bytes)
-
         self.filenames = [song.filename for song in self.songs]
+        # fmt: on
 
     def to_dict(self) -> dict:
         """Return a dictionary representation of the playlist."""
@@ -86,14 +85,14 @@ class Playlist:
         """Create a playlist based on a criteria function and maximum duration."""
         selected_songs = [song for song in audio_files if criteria_function(song)]
         random.shuffle(selected_songs)
-
         playlist_duration = 0
         self.songs = []
 
         for song in selected_songs:
-            if playlist_duration + mmss_to_seconds(song.duration) <= max_duration:
+            duration = mmss_to_seconds(song.duration)
+            if playlist_duration + duration <= max_duration:
                 self.add_song(song)
-                playlist_duration += mmss_to_seconds(song.duration)
+                playlist_duration += duration
             else:
                 break
 
@@ -103,23 +102,22 @@ class Playlist:
         self.songs = []
 
         for song in audio_files:
-            if playlist_duration + mmss_to_seconds(song.duration) <= max_duration:
+            duration = mmss_to_seconds(song.duration)
+            if playlist_duration + duration <= max_duration:
                 if song.filename in filenames:
                     self.add_song(song)
-                    playlist_duration += mmss_to_seconds(song.duration)
+                    playlist_duration += duration
             else:
                 break
 
     def export_playlist(self) -> None:
         """Export the playlist to an audio file and a promotions file."""
         # Create daily archive directory if it doesn't exist
-        if not Path.exists(DAILY_PLAYLIST_DIRECTORY):
-            Path.mkdir(DAILY_PLAYLIST_DIRECTORY)
-
+        Path(DAILY_PLAYLIST_DIRECTORY).mkdir(exist_ok=True)
         self.calculate_metrics()
-        output_path = Path(DAILY_PLAYLIST_DIRECTORY) / f"{self.title}-{DATE_STRING}.mp3"
 
         # Concatenate audio and export to the daily playlist directory
+        output_path = Path(DAILY_PLAYLIST_DIRECTORY) / f"{self.title}-{DATE_STRING}.mp3"
         concatenated_audio = concatenate_audio(self.filenames, LIBRARY_DIRECTORY)
         export_audio(concatenated_audio, output_path)
 
@@ -130,23 +128,19 @@ class Playlist:
 
         for song in self.songs:
             # Generate timestamp for each song
-            timestamp = f"{seconds_to_mmss(total_duration)} {song.song_name} by {song.artist} | {song.artist_link}"
-            track_info.append(timestamp)
+            timestamp_format = seconds_to_mmss if total_duration < SECONDS_PER_HOUR else seconds_to_hhmmss  # fmt: skip
+            track_info.append(f"{timestamp_format(total_duration)} {song.song_name} by {song.artist} | {song.artist_link}")  # fmt: skip
 
             # Add licenses to the set to avoid duplicates
             all_licenses.update(song.licenses)
-
             total_duration += mmss_to_seconds(song.duration)
 
         # Update promotions with the track info and licenses
         self.promotions = [*track_info, "\n", *list(all_licenses)]
+        promotions_path = Path(DAILY_PLAYLIST_DIRECTORY) / f"{self.title}-promotions.txt"  # fmt: skip
 
         # Write to the necessary files for audio and promotions
-        promotions_path = (
-            Path(DAILY_PLAYLIST_DIRECTORY) / f"{self.title}-promotions.txt"
-        )
-        with Path.open(promotions_path, "w") as file:
-            for line in self.promotions:
-                file.write(line + "\n")
+        with promotions_path.open("w") as file:
+            file.write("\n".join(self.promotions) + "\n")
 
         print("successfully exported your playlist :D ")
