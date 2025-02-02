@@ -8,7 +8,7 @@ SECONDS_PER_MINUTE = 60
 def seconds_to_hhmmss(seconds: float) -> str:
     """Convert a time duration in seconds to a formatted string representing the time in hours, minutes, and seconds."""
     hours = int(seconds // SECONDS_PER_HOUR)
-    minutes = int((seconds % 3600) // 60)
+    minutes = int((seconds % SECONDS_PER_HOUR) // SECONDS_PER_MINUTE)
     seconds = int(seconds % 60)
     return f"{hours:02}:{minutes:02}:{seconds:02}"
 
