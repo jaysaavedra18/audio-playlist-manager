@@ -84,6 +84,8 @@ class SongLibraryFrame(tk.Frame):
         add_songs_window.title("Add Songs")
 
         selected_file_path = filedialog.askopenfilename(title="Select Downloaded File")
+        if not selected_file_path:
+            return
 
         # Create an Entry widget for the user to paste data
         data_text = tk.Text(add_songs_window)
