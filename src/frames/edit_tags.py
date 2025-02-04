@@ -18,7 +18,7 @@ class EditTagsFrame(tk.Frame):
         label.pack()
         # Define users' options
         options = [
-            ("Genre", "genre"),
+            ("Genre", "genres"),
             ("Mood", "moods"),
         ]
         # Create buttons for users' options
