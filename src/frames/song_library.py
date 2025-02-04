@@ -134,7 +134,7 @@ class SongLibraryFrame(tk.Frame):
                 filename=filename,
                 file_size=file_size,
                 licenses=parsed_data["licenses"],
-                genre=[],
+                genres=[],
                 moods=[],
             )
             Path.rename(filepath, new_filepath)
