@@ -38,7 +38,7 @@ class AudioFile:
             "filename": self.filename,
             "file_size": self.file_size,
             "licenses": self.licenses,
-            "genre": self.genre,
+            "genres": self.genres,
             "moods": self.moods,
         }
 
