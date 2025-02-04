@@ -54,8 +54,8 @@ class AudioFile:
         print("Licenses:")
         for line in self.licenses:
             print(f"  - {line}")
-        print("Genre:")
-        for g in self.genre:
+        print("Genres:")
+        for g in self.genres:
             print(f"  - {g}")
         print("Moods:")
         for mood in self.moods:
@@ -69,6 +69,6 @@ class AudioFile:
 
     def add_genre(self, genre: str) -> None:
         """Add a genre to the audio file."""
-        if genre not in self.genre:
-            self.genre.append(genre)
-            print(f"Changed genre to '{genre}' for '{self.song_name}'")
+        if genre not in self.genres:
+            self.genres.append(genre)
+            print(f"Added genre '{genre}' to genres for '{self.song_name}'")
