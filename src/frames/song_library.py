@@ -93,6 +93,7 @@ class SongLibraryFrame(tk.Frame):
         data_text = tk.Text(add_songs_window)
         data_text.pack()
 
+        # Create a button to add and process the data
         add_button = tk.Button(
             add_songs_window,
             text="Add and Process",
