@@ -83,6 +83,7 @@ class SongLibraryFrame(tk.Frame):
         add_songs_window = tk.Toplevel(self)
         add_songs_window.title("Add Songs")
 
+        # Open file dialog to select file
         selected_file_path = filedialog.askopenfilename(title="Select Downloaded File")
         if not selected_file_path:
             add_songs_window.destroy()
