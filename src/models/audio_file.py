@@ -12,7 +12,7 @@ class AudioFile:
         filename: str,
         file_size: float,
         licenses: list[str],
-        genre: list[str],
+        genres: list[str],
         moods: list[str],
     ) -> None:
         """Initialize the AudioFile object."""
@@ -24,7 +24,7 @@ class AudioFile:
         self.filename = filename
         self.file_size = file_size
         self.licenses = licenses
-        self.genre = genre
+        self.genres = genres
         self.moods = moods
 
     def to_dict(self) -> dict:
@@ -38,7 +38,7 @@ class AudioFile:
             "filename": self.filename,
             "file_size": self.file_size,
             "licenses": self.licenses,
-            "genre": self.genre,
+            "genres": self.genres,
             "moods": self.moods,
         }
 
@@ -54,8 +54,8 @@ class AudioFile:
         print("Licenses:")
         for line in self.licenses:
             print(f"  - {line}")
-        print("Genre:")
-        for g in self.genre:
+        print("Genres:")
+        for g in self.genres:
             print(f"  - {g}")
         print("Moods:")
         for mood in self.moods:
@@ -69,6 +69,6 @@ class AudioFile:
 
     def add_genre(self, genre: str) -> None:
         """Add a genre to the audio file."""
-        if genre not in self.genre:
-            self.genre.append(genre)
-            print(f"Changed genre to '{genre}' for '{self.song_name}'")
+        if genre not in self.genres:
+            self.genres.append(genre)
+            print(f"Added genre '{genre}' to genres for '{self.song_name}'")
