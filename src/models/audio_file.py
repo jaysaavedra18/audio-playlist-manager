@@ -12,7 +12,7 @@ class AudioFile:
         filename: str,
         file_size: float,
         licenses: list[str],
-        genre: list[str],
+        genres: list[str],
         moods: list[str],
     ) -> None:
         """Initialize the AudioFile object."""
