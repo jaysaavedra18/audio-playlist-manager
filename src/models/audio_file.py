@@ -24,7 +24,7 @@ class AudioFile:
         self.filename = filename
         self.file_size = file_size
         self.licenses = licenses
-        self.genre = genre
+        self.genres = genres
         self.moods = moods
 
     def to_dict(self) -> dict:
