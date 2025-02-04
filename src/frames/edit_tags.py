@@ -64,8 +64,8 @@ class EditTagsFrame(tk.Frame):
                     if user_input in audio_file.moods:
                         break
                     audio_file.add_mood(user_input)
-                elif tag == "genre":
-                    if user_input in audio_file.genre:
+                elif tag == "genres":
+                    if user_input in audio_file.genres:
                         break
                     audio_file.add_genre(user_input)
                 data_store.update(audio_file)
