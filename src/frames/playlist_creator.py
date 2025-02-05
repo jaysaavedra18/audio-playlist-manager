@@ -3,8 +3,8 @@ from pathlib import Path
 from tkinter import filedialog, simpledialog
 
 from models.playlist import Playlist
-
 from utils.converter import hhmmss_to_seconds
+
 from .navigator import navigate_to
 
 
