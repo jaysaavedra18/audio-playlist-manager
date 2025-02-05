@@ -71,5 +71,3 @@ class PlaylistCreatorFrame(tk.Frame):
                 print(
                     "Invalid time input. Please enter positive values for minutes and seconds.",
                 )
-            except ValueError:
-
