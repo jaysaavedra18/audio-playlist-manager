@@ -56,3 +56,6 @@ class PlaylistCreatorFrame(tk.Frame):
         playlist = Playlist(title=title)
         playlist.add_songs_by_filename(filenames=filenames, max_duration=max_duration)
         playlist.export_playlist()
+
+   def get_time_input(self) -> float:
+        """Get the maximum duration of the playlist."""
