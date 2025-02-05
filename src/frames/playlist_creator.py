@@ -72,4 +72,4 @@ class PlaylistCreatorFrame(tk.Frame):
                     "Invalid time input. Please enter positive values for minutes and seconds.",
                 )
             except ValueError:
-                print("Invalid time format. Please use the format mm:ss.")
+
