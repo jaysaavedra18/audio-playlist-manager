@@ -68,6 +68,3 @@ class PlaylistCreatorFrame(tk.Frame):
                 minutes, seconds = map(int, time_str.split(":"))
                 if minutes >= 0 and seconds >= 0:
                     return minutes * 60 + seconds
-                print(
-                    "Invalid time input. Please enter positive values for minutes and seconds.",
-                )
