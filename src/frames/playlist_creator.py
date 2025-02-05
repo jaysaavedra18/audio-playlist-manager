@@ -60,7 +60,3 @@ class PlaylistCreatorFrame(tk.Frame):
     def get_time_input(self) -> float:
         """Get the max duration of the playlist."""
         while True:
-            time_str = simpledialog.askstring(
-                "Enter Max Duration",
-                "Enter max duration (mm:ss):",
-            )
