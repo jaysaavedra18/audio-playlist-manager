@@ -64,7 +64,3 @@ class PlaylistCreatorFrame(tk.Frame):
                 "Enter Max Duration",
                 "Enter max duration (mm:ss):",
             )
-            try:
-                minutes, seconds = map(int, time_str.split(":"))
-                if minutes >= 0 and seconds >= 0:
-                    return minutes * 60 + seconds
