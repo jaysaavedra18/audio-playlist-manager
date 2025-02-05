@@ -4,6 +4,7 @@ from tkinter import filedialog, simpledialog
 
 from models.playlist import Playlist
 
+from utils.converter import hhmmss_to_seconds
 from .navigator import navigate_to
 
 
@@ -57,10 +58,19 @@ class PlaylistCreatorFrame(tk.Frame):
         playlist.add_songs_by_filename(filenames=filenames, max_duration=max_duration)
         playlist.export_playlist()
 
-   def get_time_input(self) -> float:
+    def get_time_input(self) -> float:
         """Get the maximum duration of the playlist."""
-       while True:
+        while True:
             time_str = simpledialog.askstring(
                 "Enter Max Duration",
                 "Enter max duration (hh:mm:ss):",
             )
+            try:
+                if "-" in time_str:
+                    print(
+                        "Invalid time input. Please enter positive values for hours, minutes, and seconds.",
+                    )
+                else:
+                    return hhmmss_to_seconds(time_str)
+            except ValueError:
+                print("Invalid time format. Please use the format hh:mm:ss.")
